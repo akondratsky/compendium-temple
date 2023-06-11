@@ -1,0 +1,35 @@
+shape: sequence_diagram
+
+user: User { shape: Person }
+worker: Client Worker
+deps: NPM Dependencies
+server: Server
+tasksDb: Tasks Database
+search: Search Database
+
+user -> worker: git clone && npm i
+user -> worker.app: npm start
+
+worker.app -> deps.update: versions check
+worker.app <- deps.update: updated { style.stroke-dash: 5 }
+
+worker.app -> deps.task: getTasks()
+deps.task -> server.tasks: GET /tasks
+
+server.tasks -> tasksDb.db: |
+  get available task
+  set timeout
+|
+
+server.tasks <- tasksDb.db: task with ID { style.stroke-dash: 5 }
+deps.task <- server.tasks: returns task { style.stroke-dash: 5 }
+deps.task."Collecting data from GitHub API"
+
+deps.task -> server.result: "done"
+server.result -> search: save collected data
+server.result <- search: done { style.stroke-dash: 5 }
+server.result -> tasksDb.done: mark as completed
+server.result <- tasksDb.done { style.stroke-dash: 5 }
+
+server.result -> deps.task: done { style.stroke-dash: 5 }
+deps.task -> worker.app: ready for a next task { style.stroke-dash: 5 }

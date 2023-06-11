@@ -1,0 +1,32 @@
+clientWorker: Client Worker {
+  shape: class
+  +getAvailbleTasks(): Task
+}
+
+Task {
+  endpoints
+  mapping
+  parameters
+}
+
+server {
+  getTask
+
+  db: database {
+    shape: cylinder
+    
+    tasks
+    repositories
+  }  
+}
+
+explanation: |md
+  ```sh
+    git clone myrepo.git
+    cd myrepo
+    npm ci
+    # some time
+    npm start
+    # checks updates - actual version of packages
+  ```
+| { }
