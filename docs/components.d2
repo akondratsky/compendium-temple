@@ -1,32 +1,36 @@
-clientWorker: Client Worker {
-  shape: class
-  +getAvailbleTasks(): Task
+direction: right
+
+cli: CLI {
+  
+  Updater {
+    shape: class
+    getCurrentVersion(): string
+    getLatestVersion(): string
+    update(): void
+  }
+
+  Logger {
+    shape: class
+    log(message: string): void
+  }
+
+  Runner {
+    shape: class
+    start(): Promise<void>
+    stop(): Promise<void>
+  }
+
+  Runner -> IClientWorker
+
+  IClientWorker: <IClientWorker> { shape: class }
 }
 
-Task {
-  endpoints
-  mapping
-  parameters
+
+package: npm package {
+  ClientWorker {
+    shape: class
+    runTask(): Promise<void>
+  }
 }
 
-server {
-  getTask
-
-  db: database {
-    shape: cylinder
-    
-    tasks
-    repositories
-  }  
-}
-
-explanation: |md
-  ```sh
-    git clone myrepo.git
-    cd myrepo
-    npm ci
-    # some time
-    npm start
-    # checks updates - actual version of packages
-  ```
-| { }
+cli.IClientWorker -- package.ClientWorker
