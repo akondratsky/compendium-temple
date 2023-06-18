@@ -3,8 +3,5 @@
   "bin": {
     "compendium": "compendium.js"
   },
-  "version": "0.0.1",
-  "dependencies": {
-    "latest-version": "7.0.0"
-  }
+  "version": "0.0.1"
 }

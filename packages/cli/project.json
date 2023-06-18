@@ -19,7 +19,13 @@
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs cli {args.ver} {args.tag}",
+      "command": "ts-node tools/publish.ts cli {args.ver} {args.tag}",
+      "dependsOn": [
+        "build"
+      ]
+    },
+    "publish-local": {
+      "command": "ts-node tools/publish-local.ts cli",
       "dependsOn": [
         "build"
       ]
