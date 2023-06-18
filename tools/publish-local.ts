@@ -1,19 +1,30 @@
 import { execSync } from 'child_process';
 import devkit from '@nx/devkit';
 import clipboard from 'clipboardy-ts';
-import fs from 'fs';
 import { validateOrExit } from './utils';
-import minimist from 'minimist';
+import minimist, { ParsedArgs } from 'minimist';
+import { publishLocallyFromCwd } from './utils/publishLocallyFromCwd';
 
-const argv = minimist(process.argv.slice(2));
+type PublicLocalArgs = ParsedArgs & {
+  autoInstall: boolean;
+  global: boolean;
+};
 
-const [, , projectName] = process.argv;
+const options = minimist(process.argv.slice(2)) as PublicLocalArgs;
+
+const [projectName, ...restArgs] = options._;
+
+validateOrExit(
+  restArgs.length === 0,
+  `Unknown arguments: ${restArgs.join(' ')}`
+)
+
 const graph = devkit.readCachedProjectGraph();
 const project = graph.nodes[projectName];
 
 validateOrExit(
   !!project,
- `Could not find project "${projectName}" in the workspace. Is the project.json configured correctly?`,
+  `Could not find project "${projectName}" in the workspace. Is the project.json configured correctly?`,
 );
 
 const outputPath = project.data?.targets?.['build']?.options?.outputPath;
@@ -24,25 +35,18 @@ validateOrExit(
 
 process.chdir(outputPath);
 
-validateOrExit(
-  fs.existsSync('package.json'),
-  'Could not find package.json',
-);
+const { name: packageName } = publishLocallyFromCwd();
 
-const { name: packageName } = JSON.parse(fs.readFileSync('package.json', 'utf-8'))
+const installCommand = `npm i ${options.global ? '-g ' : ''}${packageName} --registry=http://localhost:4873/`;
 
 try {
-  execSync(`npm publish --registry=http://localhost:4873/`);
-} catch (e: any) {
-  console.log(String(e));
-}
-console.log('Package published.');
-
-const installCommand = `npm i -g ${packageName} --registry=http://localhost:4873/`;
-try {
-  clipboard.writeSync(installCommand);
+  if (options.autoInstall) {
+    execSync(installCommand);
+  } else {
+    clipboard.writeSync(installCommand);
+    console.log(`Command is copied into clipboard: ${installCommand}`)
+  }
 } catch (e) {
   console.log(String(e));
 }
 
-console.log(`Command is copied into clipboard: ${installCommand}`)

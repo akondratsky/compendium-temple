@@ -25,7 +25,7 @@
       ]
     },
     "publish-local": {
-      "command": "ts-node tools/publish-local.ts cli",
+      "command": "ts-node tools/publish-local.ts cli --global",
       "dependsOn": [
         "build"
       ]
