@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import devkit from '@nx/devkit';
-import clipboard from 'clipboardy';
+import clipboard from 'clipboardy-ts';
 import fs from 'fs';
 import { validateOrExit } from './utils';
 import minimist from 'minimist';
@@ -31,9 +31,18 @@ validateOrExit(
 
 const { name: packageName } = JSON.parse(fs.readFileSync('package.json', 'utf-8'))
 
-execSync(`npm publish --registry http://localhost:4873/`);
+try {
+  execSync(`npm publish --registry=http://localhost:4873/`);
+} catch (e: any) {
+  console.log(String(e));
+}
 console.log('Package published.');
 
-const installCommand = `npm i -g ${packageName}`;
-clipboard.writeSync(installCommand);
+const installCommand = `npm i -g ${packageName} --registry=http://localhost:4873/`;
+try {
+  clipboard.writeSync(installCommand);
+} catch (e) {
+  console.log(String(e));
+}
+
 console.log(`Command is copied into clipboard: ${installCommand}`)

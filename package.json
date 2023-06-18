@@ -33,7 +33,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "clipboardy": "3.0.0",
+    "clipboardy-ts": "1.0.0",
     "commander": "11.0.0",
     "inversify": "6.0.1",
     "minimist": "1.2.2",
