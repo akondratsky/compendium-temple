@@ -10,7 +10,6 @@
     "noFallthroughCasesInSwitch": true,
     "noEmit": true
   },
-  "files": [],
   "include": [],
   "references": [
     {

@@ -1,7 +1,11 @@
 {
   "name": "@compendium/cli",
   "bin": {
-    "compendium": "compendium.js"
+    "compendium": "bin/compendium.js"
   },
+  "files": [
+    "bin",
+    "index.js"
+  ],
   "version": "0.0.1"
 }

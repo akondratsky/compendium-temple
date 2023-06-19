@@ -41,7 +41,9 @@ const installCommand = `npm i ${options.global ? '-g ' : ''}${packageName} --reg
 
 try {
   if (options.autoInstall) {
+    console.log('Installing package...')
     execSync(installCommand);
+    console.log('Package installed.');
   } else {
     clipboard.writeSync(installCommand);
     console.log(`Command is copied into clipboard: ${installCommand}`)
