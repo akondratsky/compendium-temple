@@ -5,4 +5,7 @@ import { ICli } from './interfaces';
 
 const cli = dic.get<ICli>(DI.Cli);
 
-cli.start();
+console.log(cli);
+
+// cli.start();
+console.log('yes, sir');
