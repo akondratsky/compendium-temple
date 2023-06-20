@@ -30,5 +30,10 @@
         "{workspaceRoot}/.eslintignore"
       ]
     }
+  },
+  "pluginsConfig": {
+    "@nx/js": {
+      "analyzeSourceFiles": true
+    }
   }
 }
