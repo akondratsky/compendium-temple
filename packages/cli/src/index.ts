@@ -1,11 +1,8 @@
 import 'reflect-metadata';
 import { dic } from './dic';
-import { DI } from './di';
+import { Injectable } from './injectables';
 import { ICli } from './interfaces';
 
-const cli = dic.get<ICli>(DI.Cli);
+dic.get<ICli>(Injectable.Cli).start();
 
-console.log(cli);
 
-// cli.start();
-console.log('yes, sir');

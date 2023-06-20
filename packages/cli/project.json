@@ -16,7 +16,7 @@
           "packages/cli/src/*.js"
         ],
         "buildableProjectDepsInPackageJsonType": "dependencies",
-        "updateBuildableProjectPackageJsonDependencies": true
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "publish": {

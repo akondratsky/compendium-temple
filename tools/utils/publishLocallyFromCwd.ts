@@ -4,14 +4,14 @@ import { validateOrExit } from './validateOrExit';
 import { PackageJson } from 'nx/src/utils/package-json';
 import { updateBetaVersion } from './updateBetaVersion';
 
-export const publishLocallyFromCwd = () => {
+export const publishLocallyFromCwd = async () => {
   validateOrExit(
     fs.existsSync('package.json'),
     'Could not find package.json',
   );
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf-8')) as PackageJson;
 
-  packageJson.version = updateBetaVersion(packageJson);
+  packageJson.version = await updateBetaVersion(packageJson);
 
   fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2), 'utf-8');
 
