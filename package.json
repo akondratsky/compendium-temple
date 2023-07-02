@@ -10,6 +10,7 @@
     "@nx/js": "16.3.2",
     "@nx/linter": "16.3.2",
     "@nx/node": "16.3.2",
+    "@nx/rollup": "16.3.2",
     "@types/jest": "^29.4.0",
     "@types/minimist": "1.2.2",
     "@types/node": "~18.7.1",
@@ -31,13 +32,13 @@
     "packages/*"
   ],
   "dependencies": {
-    "@badisi/latest-version": "6.1.6",
+    "@badisi/latest-version": "6.1.7",
     "clipboardy-ts": "1.0.0",
     "commander": "11.0.0",
-    "inversify": "6.0.1",
     "minimist": "1.2.2",
     "reflect-metadata": "0.1.13",
     "tslib": "^2.3.0",
+    "tsyringe": "4.8.0",
     "winston": "3.9.0"
   }
 }

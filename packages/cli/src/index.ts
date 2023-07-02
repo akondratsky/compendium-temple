@@ -1,8 +1,18 @@
 import 'reflect-metadata';
-import { dic } from './dic';
+import { container } from 'tsyringe';
+
+import * as Interface from './interfaces';
 import { Injectable } from './injectables';
-import { ICli } from './interfaces';
 
-dic.get<ICli>(Injectable.Cli).start();
+import { Cli } from './services/Cli';
+import { WorkerVersionManager } from './services/WorkerVersionManager';
+import { ConfigurationManager } from './services/ConfigurationManager';
+import { AutoUpdater } from './services/AutoUpdater';
 
+container
+  .register<Interface.ICli>(Injectable.Cli, { useClass: Cli })
+  .register<Interface.IWorkerVersionManager>(Injectable.WorkerVersionManager, { useClass: WorkerVersionManager })
+  .register<Interface.IConfigurationManager>(Injectable.ConfigurationManager, { useClass: ConfigurationManager })
+  .register<Interface.IAutoUpdater>(Injectable.AutoUpdater, { useClass: AutoUpdater });
 
+container.resolve<Interface.ICli>(Injectable.Cli).start();

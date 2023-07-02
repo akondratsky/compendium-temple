@@ -10,6 +10,7 @@
         "{options.outputPath}"
       ],
       "options": {
+        "buildableProjectDepsInPackageJsonType": "dependencies",
         "outputPath": "dist/packages/worker",
         "main": "packages/worker/src/index.ts",
         "tsConfig": "packages/worker/tsconfig.lib.json",
@@ -27,6 +28,18 @@
           "packages/worker/**/*.ts"
         ]
       }
+    },
+    "publish": {
+      "command": "ts-node tools/publish.ts cli {args.ver} {args.tag}",
+      "dependsOn": [
+        "build"
+      ]
+    },
+    "publish-local": {
+      "command": "ts-node tools/publish-local.ts worker",
+      "dependsOn": [
+        "build"
+      ]
     },
     "test": {
       "executor": "@nx/jest:jest",

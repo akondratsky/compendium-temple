@@ -1,16 +1,24 @@
-import { injectable } from 'inversify';
+import { injectable } from 'tsyringe';
 import getLatestVersion from '@badisi/latest-version';
-import { IWorkerVersionManager } from '../interfaces';
+import { IWorkerVersionManager } from '../../interfaces';
 
 @injectable()
 export class WorkerVersionManager implements IWorkerVersionManager {
   async getIsLatestInstalled(): Promise<boolean> {
-    throw new Error('Method not implemented.');
+    const latest = await this.getLatestVersion();
+
+    console.log(`Latest version: ${latest}`);
+    console.log(`
+      __dirname: ${__dirname}
+      cwd: ${process.cwd()}
+    `)
+
+    return false;
   }
 
   async getLatestVersion(): Promise<string> {
     const { latest } = await getLatestVersion('@compendium/cli', {
-      registryUrl: 'http://localhost:4873/'
+      registryUrl: 'http://localhost:4873/',
     });
 
     if (!latest) {

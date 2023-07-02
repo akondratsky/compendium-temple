@@ -1,8 +1,7 @@
-/** injectables */
-export const Injectable = {
-  Logger: Symbol.for('Logger'),
-  WorkerVersionManager: Symbol.for('WorkerVersionManager'),
-  WorkerAutoUpdater: Symbol.for('WorkerAutoUpdater'),
-  WorkRunner: Symbol.for('WorkRunner'),
-  Cli: Symbol.for('Cli'),
-} as const;
+export enum Injectable {
+  WorkerVersionManager ='WorkerVersionManager',
+  WorkerAutoUpdater = 'WorkerAutoUpdater',
+  ConfigurationManager = 'ConfigurationManager',
+  AutoUpdater = 'AutoUpdater',
+  Cli = 'Cli',
+}

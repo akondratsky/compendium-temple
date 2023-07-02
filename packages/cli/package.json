@@ -1,21 +1,7 @@
 {
   "name": "@compendium/cli",
   "bin": {
-    "compendium": "bin/compendium.js"
-  },
-  "files": [
-    "bin",
-    "src"
-  ],
-  "dependencies": {
-    "commander": "11.0.0",
-    "inversify": "6.0.1",
-    "@badisi/latest-version": "6.1.6",
-    "minimist": "1.2.2",
-    "reflect-metadata": "0.1.13",
-    "tslib": "2.3.0",
-    "winston": "3.9.0",
-    "@compendium/worker": "latest"
+    "compendium": "compendium.js"
   },
   "version": "0.0.1"
 }

@@ -6,17 +6,16 @@ export interface IWorkerVersionManager {
   getLatestVersion(): Promise<string>;
 }
 
-
-export interface IWorkerAutoUpdater {
-  update(): Promise<void>;
+export interface IConfigurationManager {
+  setRegistryUrl(registryUrl?: string): Promise<void>;
+  getRegistryUrl(): Promise<string | undefined>;
+  setIsDebug(isDebug: boolean): Promise<void>;
+  getIsDebug(): Promise<boolean>;
 }
 
-
-export interface IWorkRunner {
-  start(): Promise<void>;
-  stop(): Promise<void>;
+export interface IAutoUpdater {
+  autoUpdate(): Promise<void>;
 }
-
 
 export interface ICli {
   start(): void;

@@ -1,0 +1,1 @@
+export { WorkerVersionManager } from './WorkerVersionManager';

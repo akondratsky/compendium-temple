@@ -5,22 +5,43 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/rollup:rollup",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
       "options": {
         "main": "packages/cli/src/index.ts",
         "outputPath": "dist/packages/cli",
+        "compiler": "tsc",
+        "format": ["cjs"],
         "tsConfig": "packages/cli/tsconfig.lib.json",
-        "assets": [
-          "packages/cli/*.md",
-          "packages/cli/bin/*",
-          "packages/cli/src/*.js"
-        ],
+        "project": "packages/cli/package.json",
         "buildableProjectDepsInPackageJsonType": "dependencies",
-        "updateBuildableProjectDepsInPackageJson": true
+        "rollupConfig": "packages/cli/rollup.config.js",
+        "assets": [
+          {
+            "glob": "packages/cli/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/cli/bin/compendium.js",
+            "input": ".",
+            "output": "."
+          }
+        ]
       },
-      "dependsOn": [
-        "^build"
-      ]
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "sourceMap": false,
+          "declaration": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
     },
     "publish": {
       "command": "ts-node tools/publish.ts cli {args.ver} {args.tag}",
