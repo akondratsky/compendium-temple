@@ -20,7 +20,6 @@ cli: "@compendium/cli" {
   WorkerVersionManager {
     shape: class
     getIsLatestInstalled(): Promise<boolean>
-    getLatestVersion(): Promise<string>
   }
 
   AutoUpdater {
@@ -39,10 +38,12 @@ cli: "@compendium/cli" {
   AutoUpdater -> WorkerVersionManager
 }
 
+cli.Cli -> package.Worker
+
 
 package: "@compendium/worker" {
   Worker {
     shape: class
-    runTask(): Promise<void>
+    start(): Promise<void>
   }
 }

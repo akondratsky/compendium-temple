@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { container } from 'tsyringe';
+import { Lifecycle, container } from 'tsyringe';
 
 import * as Interface from './interfaces';
 import { Injectable } from './injectables';
@@ -12,7 +12,11 @@ import { AutoUpdater } from './services/AutoUpdater';
 container
   .register<Interface.ICli>(Injectable.Cli, { useClass: Cli })
   .register<Interface.IWorkerVersionManager>(Injectable.WorkerVersionManager, { useClass: WorkerVersionManager })
-  .register<Interface.IConfigurationManager>(Injectable.ConfigurationManager, { useClass: ConfigurationManager })
+  .register<Interface.IConfigurationManager>(
+    Injectable.ConfigurationManager,
+    { useClass: ConfigurationManager },
+    { lifecycle: Lifecycle.Singleton },
+  )
   .register<Interface.IAutoUpdater>(Injectable.AutoUpdater, { useClass: AutoUpdater });
 
 container.resolve<Interface.ICli>(Injectable.Cli).start();
