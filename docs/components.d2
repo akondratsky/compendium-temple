@@ -1,36 +1,49 @@
 direction: right
 
-cli: CLI {
+cli: "@compendium/cli" {
+
+  Cli {
+    shape: class
+    start(): void;
+  }
+
+  ConfigurationManager {
+    shape: class
+    -registryUrl: string;
+    -isDebug: boolean;
+    setRegistryUrl(string): void;
+    getRegistryUrl(): string;
+    setIsDebug(boolean): void;
+    getIsDebug(): boolean;
+  }
   
-  Updater {
+  WorkerVersionManager {
     shape: class
-    getCurrentVersion(): string
-    getLatestVersion(): string
-    update(): void
+    getIsLatestInstalled(): Promise<boolean>
   }
 
-  Logger {
+  AutoUpdater {
     shape: class
-    log(message: string): void
+    constructor(string, number)
+    autoupdate(): Promise<void>
   }
 
-  Runner {
-    shape: class
-    start(): Promise<void>
-    stop(): Promise<void>
-  }
-
-  Runner -> IClientWorker
-
-  IClientWorker: <IClientWorker> { shape: class }
-}
-
-
-package: npm package {
-  ClientWorker {
+  WorkRunner {
     shape: class
     runTask(): Promise<void>
   }
+
+  Cli -> AutoUpdater
+  Cli -> ConfigurationManager
+  AutoUpdater -> WorkerVersionManager
 }
 
-cli.IClientWorker -- package.ClientWorker
+cli.Cli -> package.Worker
+
+
+package: "@compendium/worker" {
+  Worker {
+    shape: class
+    start(): Promise<void>
+  }
+}

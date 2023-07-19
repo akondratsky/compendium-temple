@@ -1,0 +1,28 @@
+shape: sequence_diagram
+
+classes: {
+  dashed: {
+    style: {
+      stroke-dash: 5
+    }
+  }
+}
+
+cli: CLI
+config: ConfigurationManager
+updater: AutoUpdater
+versionmgr: WorkerVersionManager
+worker: Worker
+
+cli.run -> config.init: init (isDebug, registryUrl)
+cli.run <- config.init: { class: dashed }
+
+cli.run -> updater.autoupdate: autoupdate()
+updater.autoupdate -> versionmgr.islatest: getIsLatestInstalled()
+updater.autoupdate <- versionmgr.islatest: { class: dashed }
+
+updater.autoupdate -> updater.autoupdate: install latest
+
+cli.run <- updater.autoupdate: { class: dashed }
+
+cli.run -> worker: start()

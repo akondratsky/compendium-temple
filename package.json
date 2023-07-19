@@ -1,15 +1,45 @@
 {
   "name": "templates-compendium",
-  "version": "0.0.0",
+  "version": "0.0.0-1",
   "license": "MIT",
   "scripts": {},
   "private": true,
-  "dependencies": {},
   "devDependencies": {
+    "@nx/eslint-plugin": "16.3.2",
+    "@nx/jest": "16.3.2",
+    "@nx/js": "16.3.2",
+    "@nx/linter": "16.3.2",
+    "@nx/node": "16.3.2",
+    "@nx/rollup": "16.3.2",
+    "@types/jest": "^29.4.0",
+    "@types/minimist": "1.2.2",
+    "@types/node": "~18.7.1",
+    "@types/reflect-metadata": "^0.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "eslint": "~8.15.0",
+    "eslint-config-prettier": "8.1.0",
+    "jest": "^29.4.1",
+    "jest-environment-node": "^29.4.1",
     "nx": "16.3.2",
-    "nx-cloud": "latest"
+    "nx-cloud": "latest",
+    "ts-jest": "^29.1.0",
+    "ts-node": "10.9.1",
+    "typescript": "5.0.4",
+    "verdaccio": "^5.0.4"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@badisi/latest-version": "6.1.7",
+    "clipboardy-ts": "1.0.0",
+    "commander": "11.0.0",
+    "compare-versions": "5.0.3",
+    "minimist": "1.2.2",
+    "reflect-metadata": "0.1.13",
+    "tslib": "^2.3.0",
+    "tsyringe": "4.8.0",
+    "winston": "3.9.0"
+  }
 }
