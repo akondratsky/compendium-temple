@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_CONNECTION_STRING")
+}
+
+/// A Compendium Temple citizen running the worker
+model CompendiumUser {
+  /// User ID
+  id    Int     @id
+  /// GitHub user's login
+  login String
+  /// GitHub token hash to authorize users
+  hash  String?
+  /// Tasks assigned to the user
+  Task  Task[]
+}
+
+enum TaskType {
+  LIST_REPOS
+  GET_DEPS
+}
+
+model Task {
+  /// Task ID
+  id Int @id @default(autoincrement())
+
+  /// Compendium user ID
+  compendiumUserId Int            @map("userId")
+  compendiumUser   CompendiumUser @relation(fields: [compendiumUserId], references: [id])
+
+  /// Type of task, LIST_REPOS or GET_DEPS
+  type TaskType
+
+  /// When this task was list time requested
+  requestTime DateTime @default(now())
+
+  /// true if this task has already been completed
+  isDone Boolean @default(false)
+
+  listReposPayload ListReposPayload[]
+  getDepsPayload   GetDepsPayload[]
+}
+
+model MissionState {
+  id Int @id @default(1)
+
+  /// current worker/server API version for cases when API should be updated
+  apiVersion String
+
+  /// ID since which list repos request should be done
+  nextListTaskRepoId Int
+
+  /// Next repo ID to get SPDX packages list
+  nextDepsTaskRepoId Int
+}
+
+/// Payload for list repos task
+model ListReposPayload {
+  /// Task ID this payload belongs to
+  taskId Int  @id
+  task   Task @relation(fields: [taskId], references: [id])
+
+  /// Repo ID, from which repos will be returned
+  since Int
+}
+
+/// Payload for get dependencies task
+model GetDepsPayload {
+  /// Task ID this payload belongs to
+  taskId Int  @id
+  task   Task @relation(fields: [taskId], references: [id])
+
+  /// Repo ID to get dependencies for
+  repoId Int
+}
+
+enum RepoVisibility {
+  PUBLIC
+  PRIVATE
+  INTERNAL
+}
+
+enum GithubUserType {
+  USER
+  ORGANIZATION
+  BOT
+}
+
+model Repository {
+  id            Int             @id
+  nodeId        String
+  name          String /// @example Hello-World
+  fullName      String // octocat/Hello-World
+  visibility    RepoVisibility?
+  description   String?
+  defaultBranch String?
+  language      String?
+  size          Int?
+
+  // urls
+  homepage       String?
+  htmlUrl        String /// @example "https://github.com/octocat/Hello-World"
+  url            String /// @example "https://api.github.com/repos/octocat/Hello-World"
+  gitUrl         String?
+
+  // counts
+  forksCount       Int?
+  stargazersCount  Int?
+  watchersCount    Int?
+  openIssuesCount  Int?
+  subscribersCount Int?
+
+  // flags
+  isPrivate                              Boolean /// SimpleUser['private']
+  isFork                                 Boolean
+  isTemplate                             Boolean?
+  hasIssues                              Boolean?
+  hasProjects                            Boolean?
+  hasWiki                                Boolean?
+  hasPages                               Boolean?
+  hasDownloads                           Boolean?
+  hasDiscussions                         Boolean?
+  isArchived                             Boolean?
+  isDisabled                             Boolean?
+  isForkingAllowed                       Boolean?
+  // security_and_analysis
+  isAdvancedSecurityEnabled              Boolean?
+  isDependabotSecurityUpdatesEnabled     Boolean?
+  isSecretsScanningEnabled               Boolean?
+  isSecretsScanningPushProtectionEnabled Boolean?
+
+  /// owner
+  gitHubUserId Int
+  owner        GitHubUser @relation(fields: [gitHubUserId], references: [id])
+
+  codeOfConductKey String?
+  codeOfConduct    CodeOfConduct? @relation(fields: [codeOfConductKey], references: [key])
+
+  license    License? @relation(fields: [licenseKey], references: [key])
+  licenseKey String?
+
+  pushedAt  DateTime?
+  createdAt DateTime?
+  updatedAt DateTime?
+}
+
+model GitHubUser {
+  id     Int            @id
+  name   String?
+  login  String
+  nodeId String
+  type   GithubUserType
+
+  email      String?
+  gravatarId String?
+
+  avatarUrl String // URI
+  url       String
+  htmlUrl   String
+
+  siteAdmin  Boolean
+  starredAt  DateTime?
+  Repository Repository[]
+}
+
+model License {
+  key        String       @id
+  nodeId     String?
+  name       String?
+  spdxId     String?
+  url        String?
+  Repository Repository[]
+}
+
+model CodeOfConduct {
+  key        String       @id
+  name       String
+  url        String
+  htmlUrl    String
+  body       String?
+  Repository Repository[]
+}

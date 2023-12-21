@@ -1,0 +1,19 @@
+import { Logger } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
+
+const API_PREFIX = 'api';
+const port = process.env.PORT || 3000;
+
+
+(async () => {
+  const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix(API_PREFIX);
+  await app.listen(port);
+  Logger.log(`🚀 Application is running on: http://localhost:${port}/${API_PREFIX}`);
+})();

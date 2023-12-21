@@ -1,0 +1,12 @@
+version: "3.9"
+name: "compendium"
+services:
+  postgres:
+    image: postgres
+    container_name: compendium-postgres
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - 5517:5432 # NB
+    volumes:
+      - ./.data:/var/lib/postgresql/data

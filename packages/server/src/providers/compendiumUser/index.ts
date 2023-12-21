@@ -1,0 +1,1 @@
+export { CompendiumUserProvider, ICompendiumUserProvider } from './compendiumUser.provider';

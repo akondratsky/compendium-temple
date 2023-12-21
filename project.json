@@ -1,0 +1,14 @@
+{
+  "name": "compendium-temple",
+  "$schema": "node_modules/nx/schemas/project-schema.json",
+  "targets": {
+    "verdaccio": {
+      "executor": "@nx/js:verdaccio",
+      "options": {
+        "port": 4873,
+        "config": ".verdaccio/config.yml",
+        "storage": ".verdaccio/storage"
+      }
+    }
+  }
+}
