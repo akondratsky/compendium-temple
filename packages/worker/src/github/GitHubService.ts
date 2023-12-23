@@ -1,7 +1,6 @@
 import { inject, singleton } from 'tsyringe';
 import { userInfo } from 'os';
 import { getPassword } from 'keytar';
-import { EventEmitterService, IEventEmitterService, WorkerEvent } from '../eventEmitter';
 // import { Octokit } from '@octokit/core';
 
 export interface IGithubService {
@@ -15,12 +14,10 @@ export class GithubService implements IGithubService {
   private token: string | null = null;
 
   constructor(
-    @inject(EventEmitterService) private readonly eventEmitter: IEventEmitterService,
   ){
     getPassword(this.SERVICE_NAME, this.ACCOUNT_NAME).then((token) => {
       if (token) {
         this.token = token;
-        this.eventEmitter.emit(WorkerEvent.GithubAuthorization);
       }
     });
   }

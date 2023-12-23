@@ -1,8 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-
-import { ConfigService, IConfigService } from '@compendium-temple/config';
 import { AuthService, IAuthService } from '../auth';
+import { ConfigService, IConfigService } from '../config';
 
 export interface IHttpService {
   get<T>(url: string, config: AxiosRequestConfig<T>): Promise<AxiosResponse>;
@@ -23,12 +22,12 @@ export class HttpService implements IHttpService {
     @inject(AuthService) private readonly auth: IAuthService,
   ) {
     this.httpClient = axios.create({
-      baseURL: this.config.get().apiUrl,
+      baseURL: this.config.apiUrl,
     });
   }
 
   private authorize() {
-    this.httpClient.defaults.headers.common['Authorization'] = `Bearer ${this.auth.getAccessToken()}`;
+    this.httpClient.defaults.headers.common['Authorization'] = `Bearer ${this.auth.token}`;
   }
 
   public async get<T>(url: string, config: AxiosRequestConfig<T>) {

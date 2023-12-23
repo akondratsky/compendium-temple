@@ -9,12 +9,6 @@ $ compendium
 $ compendium --config
 
 # run the app in the development mode (local repository and API):
-$ compendium dev
+$ compendium --dev
 ```
 
-
-CLI configuration:
-- registry URL
-
-Worker configuration:
-- 
