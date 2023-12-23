@@ -4,6 +4,7 @@ import { TaskType } from '@prisma/client';
 import { RateLimit, TaskWithPayload } from '@compendium-temple/api';
 import { GithubService, IGithubService } from '../github';
 import { ConfigService, IConfigService } from '../config';
+import { ITimeService, TimeService } from '../time';
 
 @injectable()
 export class TaskRunnerService {
@@ -11,6 +12,7 @@ export class TaskRunnerService {
     @inject(CompendiumService) private readonly compendium: ICompendiumService,
     @inject(GithubService) private readonly github: IGithubService,
     @inject(ConfigService) private readonly config: IConfigService,
+    @inject(TimeService) private readonly time: ITimeService,
   ) { }
 
   private isRunning = true;
@@ -24,7 +26,8 @@ export class TaskRunnerService {
   }
 
   private async sleepUntilReset({ reset }: RateLimit): Promise<void> {
-    // 
+    const waitTime = this.time.getTimeDifferenceInMilliseconds(reset);
+    return new Promise((resolve) => setTimeout(resolve, waitTime));
   }
 
   /**
