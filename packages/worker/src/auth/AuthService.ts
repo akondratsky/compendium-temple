@@ -19,7 +19,7 @@ export interface IAuthService {
  */
 @singleton()
 export class AuthService implements IAuthService {
-  private readonly SERVICE_NAME = '@compendium-temple/worker/serverToken';
+  private readonly SERVICE_NAME = '@compendium-temple/worker';
   private readonly ACCOUNT_NAME = userInfo().username;
   private _accessToken: string | null = null;
 
@@ -34,8 +34,10 @@ export class AuthService implements IAuthService {
   public async authorize(): Promise<void> {
     this._accessToken = await getPassword(this.SERVICE_NAME, this.ACCOUNT_NAME);
 
+    console.log(this._accessToken);
+
     if (this._accessToken !== null) {
-      this.logger.debug('User has already authorized');
+      this.logger.debug('Authorized: token was found in the key vault');
       return;
     }
 

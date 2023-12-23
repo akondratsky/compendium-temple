@@ -11,6 +11,7 @@ export interface IConfigService {
 
   registryUrl: string;
   apiUrl: string;
+  remainingLimit: number;
 }
 
 type CompendiumConfiguration = {
@@ -21,6 +22,7 @@ type CompendiumConfiguration = {
 export class ConfigService implements IConfigService {
   public registryUrl = registryUrl('@compendium');
   public apiUrl = '';
+  public remainingLimit = 500;
 
   private readonly configFilePath = resolve(userInfo().homedir, '.compendium.config.json');
 

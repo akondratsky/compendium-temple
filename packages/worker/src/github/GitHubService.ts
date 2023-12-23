@@ -1,35 +1,41 @@
 import { inject, singleton } from 'tsyringe';
-import { userInfo } from 'os';
-import { getPassword } from 'keytar';
-// import { Octokit } from '@octokit/core';
+import { AuthService, IAuthService } from '../auth';
+import { Octokit } from '@octokit/core';
+import { MinimalRepository, RateLimit } from '@compendium-temple/api';
 
 export interface IGithubService {
-  getRateLimit(): Promise<unknown>;
+  getRateLimit(): Promise<RateLimit>;
+  listRepos(since: number): Promise<MinimalRepository[]>;
 }
+
 
 @singleton()
 export class GithubService implements IGithubService {
-  private readonly SERVICE_NAME = '@compendium-temple/worker/githubToken';
-  private readonly ACCOUNT_NAME = userInfo().username;
-  private token: string | null = null;
-
+  private readonly octokit: Octokit;
   constructor(
-  ){
-    getPassword(this.SERVICE_NAME, this.ACCOUNT_NAME).then((token) => {
-      if (token) {
-        this.token = token;
-      }
+    @inject(AuthService) private readonly auth: IAuthService,
+  ) {
+    this.octokit = new Octokit({
+      auth: this.auth.token,
     });
   }
 
-  private ensureToken() {
-    if (!this.token) {
-      throw new Error('Internal error: GitHub token was not set');
-    }
+  public async getRateLimit(): Promise<RateLimit> {
+    const { data } = await this.octokit.request('GET /rate_limit', {
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+    return data.rate;
   }
 
-  public async getRateLimit(): Promise<unknown> {
-    this.ensureToken();
-    return {};
+  public async listRepos(since: number): Promise<MinimalRepository[]> {
+    const { data } = await this.octokit.request('GET /repositories', {
+      since,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+    return data;
   }
 }

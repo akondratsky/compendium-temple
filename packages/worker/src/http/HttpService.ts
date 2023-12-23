@@ -4,10 +4,10 @@ import { AuthService, IAuthService } from '../auth';
 import { ConfigService, IConfigService } from '../config';
 
 export interface IHttpService {
-  get<T>(url: string, config: AxiosRequestConfig<T>): Promise<AxiosResponse>;
-  post<T>(url: string, data?: T, config?: AxiosRequestConfig<T>): Promise<AxiosResponse>;
-  put<T>(url: string, data?: T, config?: AxiosRequestConfig<T>): Promise<AxiosResponse>;
-  patch<T>(url: string, data?: T, config?: AxiosRequestConfig<T>): Promise<AxiosResponse>;
+  get<T>(url: string, config: AxiosRequestConfig<T>): Promise<AxiosResponse<T>>;
+  post<T>(url: string, data?: T, config?: AxiosRequestConfig<T>): Promise<AxiosResponse<T>>;
+  put<T>(url: string, data?: T, config?: AxiosRequestConfig<T>): Promise<AxiosResponse<T>>;
+  patch<T>(url: string, data?: T, config?: AxiosRequestConfig<T>): Promise<AxiosResponse<T>>;
 }
 
 /**
