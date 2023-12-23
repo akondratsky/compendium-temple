@@ -11,6 +11,6 @@ export class TasksController {
 
   @Post()
   async createTask() {
-    return this.tasksService.assignTask();
+    return this.tasksService.createListReposTask();
   }
 }

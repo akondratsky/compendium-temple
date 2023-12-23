@@ -1,4 +1,4 @@
-import { PayloadTypeMap, TaskGeneric, TaskPayload } from '@compendium-temple/api';
+import { TaskGeneric, TaskPayload } from '@compendium-temple/api';
 import { InternalServerErrorException } from '@nestjs/common';
 import { TaskType } from '@prisma/client';
 
@@ -6,7 +6,7 @@ import { ListReposPayloadProvider } from '../../providers/listReposPayload';
 import { GetDepsPayloadProvider } from '../../providers/getDepsPayload';
 
 export interface IPayloadService {
-  getPayload<T extends TaskType>(task: TaskGeneric<T>): Promise<PayloadTypeMap[T]>;
+  getPayload<T extends TaskType>(task: TaskGeneric<T>): Promise<TaskPayload<T>>;
 }
 
 export class PayloadService implements IPayloadService {

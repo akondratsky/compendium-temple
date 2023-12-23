@@ -6,14 +6,14 @@ import { GitHubUser } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { GithubUserProvider } from '../../providers/githubUser';
 import { CompendiumUserProvider } from '../../providers/compendiumUser';
-import { HashService } from '../hash';
+import { HashUtil } from '../hash';
 import { OctokitClient } from '../../dataAccess/octokit';
 
 describe('AuthService', () => {
   let authService: AuthService;
   let mockGithubUserProvider: GithubUserProvider;
   let mockCompendiumUserProvider: CompendiumUserProvider;
-  let mockHashService: HashService;
+  let mockHashUtil: HashUtil;
   let mockOctokitClient: OctokitClient;
 
   const tokenStub = 'test-token';
@@ -21,7 +21,7 @@ describe('AuthService', () => {
   beforeEach(async () => {
     mockGithubUserProvider = mock(GithubUserProvider);
     mockCompendiumUserProvider = mock(CompendiumUserProvider);
-    mockHashService = mock(HashService);
+    mockHashUtil = mock(HashUtil);
     mockOctokitClient = mock(OctokitClient);
 
     const moduleRef = await Test.createTestingModule({
@@ -30,7 +30,7 @@ describe('AuthService', () => {
         { provide: REQUEST, useValue: { header: () => tokenStub } },
         { provide: GithubUserProvider, useValue: instance(mockGithubUserProvider) },
         { provide: CompendiumUserProvider, useValue: instance(mockCompendiumUserProvider) },
-        { provide: HashService, useValue: instance(mockHashService) },
+        { provide: HashUtil, useValue: instance(mockHashUtil) },
         { provide: OctokitClient, useValue: instance(mockOctokitClient) },
       ],
     }).compile();
@@ -46,7 +46,7 @@ describe('AuthService', () => {
     it('authenticate with CompendiumUserProvider', async () => {
       const hashedToken = 'hashed-token';
       const compendiumUser = { id: 1, login: 'test', hash: hashedToken };
-      when(mockHashService.calc(tokenStub)).thenResolve(hashedToken);
+      when(mockHashUtil.calc(tokenStub)).thenResolve(hashedToken);
       when(mockCompendiumUserProvider.getByHash(hashedToken)).thenResolve(compendiumUser);
 
       expect(await authService.authenticate()).toBe(true);
@@ -58,7 +58,7 @@ describe('AuthService', () => {
       const githubUser = { id: 1, login: 'test' } as GitHubUser;
       const compendiumUser = { id: 1, login: 'test', hash: hashedToken };
   
-      when(mockHashService.calc(tokenStub)).thenResolve(hashedToken);
+      when(mockHashUtil.calc(tokenStub)).thenResolve(hashedToken);
       when(mockCompendiumUserProvider.getByHash(hashedToken)).thenResolve(null);
       when(mockOctokitClient.getAuthenticatedUser(tokenStub)).thenResolve(githubUser);
       when(mockGithubUserProvider.upsert(anything())).thenResolve(undefined);

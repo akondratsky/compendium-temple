@@ -5,7 +5,7 @@ import type { Request } from 'express';
 import type { CompendiumUser, GitHubUser } from '@prisma/client';
 
 import { GithubUserProvider } from '../../providers/githubUser';
-import { HashService } from '../hash';
+import { HashUtil } from '../../utils/hash';
 import { OctokitClient } from '../../dataAccess/octokit';
 import { CompendiumUserProvider } from '../../providers/compendiumUser';
 
@@ -25,7 +25,7 @@ export class AuthService implements IAuthService {
     @Inject(REQUEST) request: Request,
     private readonly githubUser: GithubUserProvider,
     private readonly compendiumUser: CompendiumUserProvider,
-    private readonly hash: HashService,
+    private readonly hash: HashUtil,
     private readonly octokit: OctokitClient,
   ) {
     this.token = request.header('authorization') as string;

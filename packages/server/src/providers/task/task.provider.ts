@@ -1,4 +1,4 @@
-import { TaskGeneric, TaskPayload, TaskWithPayload } from '@compendium-temple/api';
+import { TaskGeneric, TaskWithPayload } from '@compendium-temple/api';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Task, TaskType } from '@prisma/client';
 import dayjs from 'dayjs';
@@ -6,9 +6,11 @@ import { DbClient } from '../../dataAccess/db';
 import { MissionProvider } from '../mission';
 
 export interface ITaskProvider {
-  create<T extends TaskType>(type: T, compendiumUserId: number): Promise<TaskWithPayload<T>>;
+  createListReposTask(compendiumUserId: number): Promise<TaskWithPayload<typeof TaskType.LIST_REPOS>>;
+  createGetDepsTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.GET_DEPS>>;
   updateRequestedTime(task: Task): Promise<void>;
   findAvailable(): Promise<Task | null>;
+  markAsDone(taskId: number): Promise<void>;
 }
 
 @Injectable()
@@ -18,39 +20,65 @@ export class TaskProvider implements ITaskProvider {
     private readonly mission: MissionProvider,
   ) { }
 
-  public async create<T extends TaskType>(type: T, compendiumUserId: number): Promise<TaskWithPayload<T>> {
+  /**
+   * - create task
+   * - create payload
+   * - update mission
+   */
+  public async createListReposTask(compendiumUserId: number): Promise<TaskWithPayload<typeof TaskType.LIST_REPOS>> {
     try {
       const mission = await this.mission.getState();
+
       return await this.db.$transaction(async (tx) => {
         const task = await tx.task.create({
           data: {
-            type,
+            type: TaskType.LIST_REPOS,
             compendiumUserId,
             isDone: false,
-            requestTime: new Date(),
+            requestTime: compendiumUserId ? new Date() : null,
           },
-        }) as TaskGeneric<T>;
+        }) as TaskGeneric<typeof TaskType.LIST_REPOS>;
 
-        let payload: TaskPayload<T>;
+        const payload = await tx.listReposPayload.create({
+          data: {
+            taskId: task.id,
+            since: mission.nextListTaskRepoId,
+          },
+        });
 
-        if (type === TaskType.LIST_REPOS) {
-          payload = await tx.listReposPayload.create({
-            data: {
-              taskId: task.id,
-              since: mission.nextListTaskRepoId,
-            },
-          }) as TaskPayload<T>;
-        } else if (type === TaskType.GET_DEPS) {
-          payload = await tx.getDepsPayload.create({
-            data: {
-              taskId: task.id,
-              repoId: mission.nextDepsTaskRepoId,
-            },
-          }) as TaskPayload<T>;
-        } else {
-          throw new InternalServerErrorException(`Invalid task type: ${type}`);
-        }
+        await tx.missionState.update({
+          where: { id: 1 },
+          data: {
+            nextListTaskRepoId: mission.nextListTaskRepoId + 100,
+          },
+        })
 
+        return { ...task, ...payload };
+      });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  public async createGetDepsTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.GET_DEPS>> {
+    try {
+      return await this.db.$transaction(async (tx) => {
+        const task = await tx.task.create({
+          data: {
+            type: TaskType.GET_DEPS,
+            compendiumUserId: null,
+            isDone: false,
+            requestTime: null,
+          },
+        }) as TaskGeneric<typeof TaskType.GET_DEPS>;
+  
+        const payload = await tx.getDepsPayload.create({
+          data: {
+            taskId: task.id,
+            repoId,
+          },
+        });
+  
         return { ...task, ...payload };
       });
     } catch (e) {
@@ -83,7 +111,19 @@ export class TaskProvider implements ITaskProvider {
         requestTime: 'asc'
       },
     });
-
     return task ?? null;
+  }
+
+  public async markAsDone(taskId: number): Promise<void> {
+    try {
+      await this.db.task.update({
+        where: { id: taskId },
+        data: {
+          isDone: true,
+        }
+      });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 }

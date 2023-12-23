@@ -1,22 +1,22 @@
 import { Test } from '@nestjs/testing';
-import { HashService } from './hash.service';
+import { HashUtil } from './hash.util';
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashed'),
 }));
 
-describe('HashService', () => {
-  let hashService: HashService;
+describe('HashUtil', () => {
+  let hashService: HashUtil;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [HashService],
+      providers: [HashUtil],
     }).compile();
-    hashService = moduleRef.get(HashService);
+    hashService = moduleRef.get(HashUtil);
   });
 
   it('should be defined', () => {
-    expect(HashService).toBeDefined();
+    expect(HashUtil).toBeDefined();
   });
 
   it('should hash a string', async () => {

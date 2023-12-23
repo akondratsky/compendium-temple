@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Octokit } from '@octokit/rest';
 import { GitHubUser } from '@prisma/client';
+import { MapperService } from '../../utils/mapper';
 
 export interface IOctokitClient {
   getAuthenticatedUser(token: string): Promise<GitHubUser>;
@@ -8,6 +9,9 @@ export interface IOctokitClient {
 
 @Injectable()
 export class OctokitClient implements IOctokitClient {
+  constructor(
+    private readonly mapper: MapperService,
+  ) { }
   /**
    * @param token GitHub API token
    * @returns GitHub User Response
@@ -29,7 +33,7 @@ export class OctokitClient implements IOctokitClient {
         login: data.login,
         name: data.name,
         nodeId: data.node_id,
-        reposUrl: data.repos_url,
+        type: this.mapper.userType(data.type),
         siteAdmin: data.site_admin,
         url: data.url,
         starredAt: null,

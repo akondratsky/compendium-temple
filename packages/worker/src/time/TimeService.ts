@@ -20,4 +20,8 @@ export class TimeService implements ITimeService {
     const currentTime = dayjs();
     return resetTimeUtc.diff(currentTime, 'millisecond');
   }
+
+  public utcDate(date: string): Date {
+    return dayjs(date).toDate();
+  }
 }

@@ -29,14 +29,14 @@ model Task {
   id Int @id @default(autoincrement())
 
   /// Compendium user ID
-  compendiumUserId Int            @map("userId")
-  compendiumUser   CompendiumUser @relation(fields: [compendiumUserId], references: [id])
+  compendiumUserId Int?
+  compendiumUser   CompendiumUser? @relation(fields: [compendiumUserId], references: [id])
 
   /// Type of task, LIST_REPOS or GET_DEPS
   type TaskType
 
   /// When this task was list time requested
-  requestTime DateTime @default(now())
+  requestTime DateTime? @default(now())
 
   /// true if this task has already been completed
   isDone Boolean @default(false)
@@ -53,9 +53,6 @@ model MissionState {
 
   /// ID since which list repos request should be done
   nextListTaskRepoId Int
-
-  /// Next repo ID to get SPDX packages list
-  nextDepsTaskRepoId Int
 }
 
 /// Payload for list repos task
@@ -78,10 +75,6 @@ model GetDepsPayload {
   repoId Int
 }
 
-enum RepoVisibility {
-  PUBLIC
-  PRIVATE
-  INTERNAL
 }
 
 enum GithubUserType {
@@ -91,21 +84,20 @@ enum GithubUserType {
 }
 
 model Repository {
-  id            Int             @id
+  id            Int     @id
   nodeId        String
   name          String /// @example Hello-World
   fullName      String // octocat/Hello-World
-  visibility    RepoVisibility?
   description   String?
   defaultBranch String?
   language      String?
   size          Int?
 
   // urls
-  homepage       String?
-  htmlUrl        String /// @example "https://github.com/octocat/Hello-World"
-  url            String /// @example "https://api.github.com/repos/octocat/Hello-World"
-  gitUrl         String?
+  homepage String?
+  htmlUrl  String /// @example "https://github.com/octocat/Hello-World"
+  url      String /// @example "https://api.github.com/repos/octocat/Hello-World"
+  gitUrl   String?
 
   // counts
   forksCount       Int?
@@ -115,9 +107,7 @@ model Repository {
   subscribersCount Int?
 
   // flags
-  isPrivate                              Boolean /// SimpleUser['private']
   isFork                                 Boolean
-  isTemplate                             Boolean?
   hasIssues                              Boolean?
   hasProjects                            Boolean?
   hasWiki                                Boolean?
@@ -125,7 +115,6 @@ model Repository {
   hasDownloads                           Boolean?
   hasDiscussions                         Boolean?
   isArchived                             Boolean?
-  isDisabled                             Boolean?
   isForkingAllowed                       Boolean?
   // security_and_analysis
   isAdvancedSecurityEnabled              Boolean?
@@ -180,7 +169,7 @@ model CodeOfConduct {
   key        String       @id
   name       String
   url        String
-  htmlUrl    String
+  htmlUrl    String?
   body       String?
   Repository Repository[]
 }

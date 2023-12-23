@@ -1,4 +1,5 @@
 import { CodeOfConduct } from './CodeOfConduct'
+import { License } from './License'
 import { SimpleUser } from './SimpleUser'
 
 export interface MinimalRepository {
@@ -92,14 +93,7 @@ export interface MinimalRepository {
   subscribers_count?: number
   network_count?: number
   code_of_conduct?: CodeOfConduct
-  license?: {
-    key?: string
-    name?: string
-    spdx_id?: string
-    url?: string
-    node_id?: string
-    [k: string]: unknown
-  } | null
+  license: License | null
   forks?: number
   open_issues?: number
   watchers?: number

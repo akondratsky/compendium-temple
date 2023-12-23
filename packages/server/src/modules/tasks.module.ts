@@ -7,7 +7,7 @@ import { AuthService } from '../services/auth';
 import { GithubUserProvider } from '../providers/githubUser';
 import { TaskManagerService } from '../services/taskManager/taskManager.service';
 import { DbClient } from '../dataAccess/db';
-import { HashService } from '../services/hash';
+import { HashUtil } from '../utils/hash';
 import { OctokitClient } from '../dataAccess/octokit';
 
 @Module({
@@ -19,7 +19,7 @@ import { OctokitClient } from '../dataAccess/octokit';
     MissionProvider,
     AuthService,
     GithubUserProvider,
-    HashService,
+    HashUtil,
   ],
 })
 export class TasksModule {}

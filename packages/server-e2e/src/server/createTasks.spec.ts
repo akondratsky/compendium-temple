@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { PrismaClient } from '@prisma/client';
 
 describe('GET /api', () => {
   it('should return a message', async () => {
