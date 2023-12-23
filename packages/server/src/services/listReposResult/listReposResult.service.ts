@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import {
   MinimalRepository,
   CodeOfConduct as CodeOfConductResponse,
@@ -7,13 +7,12 @@ import {
 import { uniqBy } from 'lodash';
 import { MapperUtil } from '../../utils/mapper';
 import { DbClient } from '../../dataAccess/db';
-import { InternalServerErrorException } from '@nestjs/common';
 
 export interface IListReposResultService {
   save(repos: MinimalRepository[]): Promise<void>;
 }
 
-@injectable()
+@Injectable()
 export class ListReposResultService implements IListReposResultService {
   constructor(
     private readonly db: DbClient,
