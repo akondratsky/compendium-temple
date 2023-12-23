@@ -1,23 +1,23 @@
+import { injectable } from 'tsyringe';
 import {
   MinimalRepository,
   CodeOfConduct as CodeOfConductResponse,
   License as LicenseResponse,
 } from '@compendium-temple/api';
 import { uniqBy } from 'lodash';
-import { MapperService } from '../../utils/mapper';
+import { MapperUtil } from '../../utils/mapper';
 import { DbClient } from '../../dataAccess/db';
 import { InternalServerErrorException } from '@nestjs/common';
-import { TaskManagerService } from '../taskManager';
 
 export interface IListReposResultService {
   save(repos: MinimalRepository[]): Promise<void>;
 }
 
+@injectable()
 export class ListReposResultService implements IListReposResultService {
   constructor(
     private readonly db: DbClient,
-    private readonly mapper: MapperService,
-    private readonly task: TaskManagerService,
+    private readonly mapper: MapperUtil,
   ) { }
 
   /**

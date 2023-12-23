@@ -14,7 +14,6 @@ export class DbClient extends PrismaClient implements OnModuleInit {
         await this.missionState.create({
           data: {
             apiVersion: '0.0.1',
-            nextDepsTaskRepoId: 1,
             nextListTaskRepoId: 0,
           },
         });

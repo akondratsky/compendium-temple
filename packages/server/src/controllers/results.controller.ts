@@ -3,6 +3,7 @@ import { TaskType } from '@prisma/client';
 import { ResultsService } from '../services/results';
 import { AuthGuard } from '../auth.guard';
 import { ResultDto } from './ResultDto';
+import { Result } from '@compendium-temple/api';
 
 @Controller('result')
 @UseGuards(AuthGuard)
@@ -13,6 +14,6 @@ export class ResultsController {
 
   @Post()
   async returnResult(@Body() repository: ResultDto<TaskType>) {
-    console.log(repository);
+    await this.resultsService.saveResult(repository as Result<TaskType>);
   }
 }

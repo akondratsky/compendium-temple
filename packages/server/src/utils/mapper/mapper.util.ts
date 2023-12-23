@@ -7,7 +7,7 @@ import {
 import { InternalServerErrorException } from '@nestjs/common';
 import { CodeOfConduct, GitHubUser, GithubUserType, License, Repository } from '@prisma/client';
 
-export interface IMapperService {
+export interface IMapperUtil {
   ownerToGithubUser(owner: SimpleUser): GitHubUser;
   codeOfConduct(codeOfConduct: CodeOfConductResponse): CodeOfConduct;
   userType(userType: string): GithubUserType;
@@ -16,7 +16,7 @@ export interface IMapperService {
   nullableDate(date?: string | number): Date | null;
 }
 
-export class MapperService implements IMapperService {
+export class MapperUtil implements IMapperUtil {
   public nullableDate(date?: string | number | null): Date | null {
     return date ? new Date(date) : null;
   }

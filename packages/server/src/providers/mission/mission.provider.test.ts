@@ -10,7 +10,6 @@ describe('MissionProvider', () => {
   const globalMissionStateStub: MissionState = {
     apiVersion: '1.0.0-test',
     id: 1,
-    nextDepsTaskRepoId: 13,
     nextListTaskRepoId: 13,
   };
 
@@ -30,18 +29,4 @@ describe('MissionProvider', () => {
     const state = await missionService.getState();
     expect(state).toBe(globalMissionStateStub);
   });
-
-  it.each([
-    [TaskType.LIST_REPOS, 'nextListTaskRepoId']
-  ])('saves last task ID for task type "%s" into field "%s"', async (taskType, fieldName) => {
-    await missionService.updateLastTaskId(taskType, 42);
-    expect(
-      jest.mocked(db.missionState.update)
-    ).toHaveBeenCalledWith({
-      where: { id: 1 },
-      data: {
-        [fieldName]: 42
-      }
-    })
-  })
 });

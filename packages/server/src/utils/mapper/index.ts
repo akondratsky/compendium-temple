@@ -1,1 +1,1 @@
-export { IMapperService, MapperService } from './mapper.util';
+export { IMapperUtil, MapperUtil } from './mapper.util';

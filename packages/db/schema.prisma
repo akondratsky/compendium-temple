@@ -75,8 +75,6 @@ model GetDepsPayload {
   repoId Int
 }
 
-}
-
 enum GithubUserType {
   USER
   ORGANIZATION

@@ -20,11 +20,6 @@ export class TaskProvider implements ITaskProvider {
     private readonly mission: MissionProvider,
   ) { }
 
-  /**
-   * - create task
-   * - create payload
-   * - update mission
-   */
   public async createListReposTask(compendiumUserId: number): Promise<TaskWithPayload<typeof TaskType.LIST_REPOS>> {
     try {
       const mission = await this.mission.getState();
