@@ -138,5 +138,7 @@ describe('Normal Flow', () => {
       expect(response.data.type).toBe(TaskType.DETAIL_REPO);
       expect(response.data.repoId).toBe(githubListReposResponse[0].id);
     });
+
+    
   });
 });

@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { GetDepsPayload } from '@prisma/client';
 import { DbClient } from '../../dataAccess/db';
 
@@ -13,13 +13,16 @@ export class GetDepsPayloadProvider implements IGetDepsPayloadProvider {
     private readonly db: DbClient,
   ) { }
 
+  private readonly logger = new Logger(GetDepsPayloadProvider.name);
+
   public async create(taskId: number, repoId: number): Promise<GetDepsPayload> {
     try {
       return await this.db.getDepsPayload.create({
         data: { taskId, repoId }
       });
     } catch (e) {
-      throw new InternalServerErrorException(e);
+      this.logger.error((e as Error).message);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -28,11 +31,13 @@ export class GetDepsPayloadProvider implements IGetDepsPayloadProvider {
     try {
       payload = await this.db.getDepsPayload.findFirst({ where: { taskId } });
     } catch (e) {
-      throw new InternalServerErrorException(e);
+      this.logger.error((e as Error).message);
+      throw new InternalServerErrorException();
     }
     
     if (payload) return payload;
 
-    throw new InternalServerErrorException(`No GetDepsPayload found for taskId: ${taskId}`);
+    this.logger.error(`No GetDepsPayload found for taskId: ${taskId}`);
+    throw new InternalServerErrorException();
   }
 }

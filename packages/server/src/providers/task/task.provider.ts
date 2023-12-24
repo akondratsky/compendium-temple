@@ -1,5 +1,5 @@
 import { TaskGeneric, TaskWithPayload } from '@compendium-temple/api';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { Task, TaskType } from '@prisma/client';
 import dayjs from 'dayjs';
 import { DbClient } from '../../dataAccess/db';
@@ -9,7 +9,7 @@ export interface ITaskProvider {
   createListReposTask(compendiumUserId: number): Promise<TaskWithPayload<typeof TaskType.LIST_REPOS>>;
   createDetailRepoTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.DETAIL_REPO>>;
   createGetDepsTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.GET_DEPS>>;
-  updateRequestedTime(task: Task): Promise<void>;
+  assignTask(task: Task, compendiumUserId: number): Promise<void>;
   findAvailable(): Promise<Task | null>;
   markAsDone(taskId: number): Promise<void>;
 }
@@ -20,6 +20,8 @@ export class TaskProvider implements ITaskProvider {
     private readonly db: DbClient,
     private readonly mission: MissionProvider,
   ) { }
+
+  private readonly logger = new Logger(TaskProvider.name);
 
   public async createListReposTask(compendiumUserId: number): Promise<TaskWithPayload<typeof TaskType.LIST_REPOS>> {
     try {
@@ -52,7 +54,8 @@ export class TaskProvider implements ITaskProvider {
         return { ...task, ...payload };
       });
     } catch (e) {
-      throw new InternalServerErrorException(e);
+      this.logger.error((e as Error).message);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -78,7 +81,8 @@ export class TaskProvider implements ITaskProvider {
         return { ...task, ...payload };
       });
     } catch (e) {
-      throw new InternalServerErrorException(e);
+      this.logger.error((e as Error).message);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -104,36 +108,51 @@ export class TaskProvider implements ITaskProvider {
         return { ...task, ...payload };
       });
     } catch (e) {
-      throw new InternalServerErrorException(e);
+      this.logger.error((e as Error).message);
+      throw new InternalServerErrorException();
     }
   }
 
-  public async updateRequestedTime(task: Task): Promise<void> {
+  public async assignTask(task: Task, compendiumUserId: number): Promise<void> {
     try {
       await this.db.task.update({
         where: task,
         data: {
           requestTime: new Date(),
+          compendiumUserId,
         }
       });
     } catch (e) {
-      throw new InternalServerErrorException(e);
+      this.logger.error((e as Error).message);
+      throw new InternalServerErrorException();
     }
   }
 
   public async findAvailable(): Promise<Task | null> {
-    const task = await this.db.task.findFirst({
-      where: {
-        isDone: false,
-        requestTime: {
-          lte: dayjs().utc().subtract(1, 'hour').toDate()
+    try {
+      const task = await this.db.task.findFirst({
+        where: {
+          OR: [{
+            isDone: false,
+            requestTime: {
+              lte: dayjs().utc().subtract(1, 'hour').toDate()
+            },
+          }, {
+            isDone: false,
+            requestTime: null,
+          }],
+          
         },
-      },
-      orderBy: {
-        requestTime: 'asc'
-      },
-    });
-    return task ?? null;
+        orderBy: {
+          requestTime: 'asc'
+        },
+      });
+      return task ?? null;
+    } catch (e) {
+      this.logger.error((e as Error).message);
+      throw new InternalServerErrorException();
+    }
+    
   }
 
   public async markAsDone(taskId: number): Promise<void> {
@@ -145,7 +164,7 @@ export class TaskProvider implements ITaskProvider {
         }
       });
     } catch (e) {
-      throw new InternalServerErrorException(e);
+      throw new InternalServerErrorException();
     }
   }
 }

@@ -4,7 +4,7 @@ import {
   SimpleUser,
   License as LicenseResponse,
 } from '@compendium-temple/api';
-import { InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CodeOfConduct, GitHubUser, GithubUserType, License, Repository } from '@prisma/client';
 
 export interface IMapperUtil {
@@ -16,7 +16,10 @@ export interface IMapperUtil {
   nullableDate(date?: string | number): Date | null;
 }
 
+@Injectable()
 export class MapperUtil implements IMapperUtil {
+  private readonly logger = new Logger(MapperUtil.name);
+
   public nullableDate(date?: string | number | null): Date | null {
     return date ? new Date(date) : null;
   }
@@ -71,7 +74,8 @@ export class MapperUtil implements IMapperUtil {
       case 'Bot':
         return GithubUserType.BOT;
       default:
-        throw new InternalServerErrorException(`Unknown user type: ${userType}`);
+        this.logger.error(`Unknown user type: ${userType}`);
+        throw new InternalServerErrorException();
     }
   }
 

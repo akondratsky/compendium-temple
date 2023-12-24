@@ -26,7 +26,8 @@ export class CompendiumUserProvider implements ICompendiumUserProvider {
         where: { hash }
       });
     } catch (e) {
-      throw new InternalServerErrorException(e);
+      this.logger.error((e as Error).message);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -39,7 +40,8 @@ export class CompendiumUserProvider implements ICompendiumUserProvider {
         update: user,
       });
     } catch (e) {
-      throw new InternalServerErrorException(e);
+      this.logger.error((e as Error).message);
+      throw new InternalServerErrorException();
     }
   }
 }

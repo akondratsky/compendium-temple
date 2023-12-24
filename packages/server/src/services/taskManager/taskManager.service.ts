@@ -27,10 +27,10 @@ export class TaskManagerService implements ITaskManagerService {
 
   public async getAvailableOrCreateTask(): Promise<TaskWithPayload<TaskType>> {
     const task = await this.tasks.findAvailable() as TaskGeneric<TaskType>;
-    this.logger.debug(`Found task: ${task?.id}`);
+    this.logger.debug(`Found task: ${task?.id ?? null}`);
 
-    if (task !== null) {
-      await this.tasks.updateRequestedTime(task);
+    if (task) {
+      await this.tasks.assignTask(task, this.auth.getCurrentUserId());
       const payload = await this.payload.getPayload(task as TaskGeneric<TaskType>);
       return { ...task, ...payload };
     }

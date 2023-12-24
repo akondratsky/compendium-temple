@@ -83,7 +83,7 @@ export class AuthService implements IAuthService {
       this.logger.debug(`Upserted user: ${this.currentUser.id}`);
     } catch (e) {
       this.logger.error(`Error upserting user: ${(e as Error).message}`);
-      throw new InternalServerErrorException(e);
+      throw new InternalServerErrorException();
     }
 
     return true;

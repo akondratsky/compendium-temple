@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { ListReposPayload } from '@prisma/client';
 import { DbClient } from '../../dataAccess/db';
 
@@ -12,16 +12,20 @@ export class ListReposPayloadProvider implements IListReposPayloadProvider {
     private readonly db: DbClient,
   ) { }
 
+  private readonly logger = new Logger(ListReposPayloadProvider.name);
+
   public async getByTaskId(taskId: number): Promise<ListReposPayload> {
     let payload: ListReposPayload | null;
     try {
       payload = await this.db.listReposPayload.findFirst({ where: { taskId } });
     } catch (e) {
-      throw new InternalServerErrorException(e);
+      this.logger.error((e as Error).message);
+      throw new InternalServerErrorException();
     }
     
     if (payload) return payload;
 
-    throw new InternalServerErrorException(`No ListReposPayload found for taskId: ${taskId}`);
+    this.logger.error(`No ListReposPayload found for taskId: ${taskId}`)
+    throw new InternalServerErrorException();
   }
 }

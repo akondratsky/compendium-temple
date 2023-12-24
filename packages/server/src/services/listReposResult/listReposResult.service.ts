@@ -74,7 +74,7 @@ export class ListReposResultService implements IListReposResultService {
       );
     } catch (e) {
       this.logger.error(`Error saving list repos result: ${(e as Error).message}`);
-      throw new InternalServerErrorException(e);
+      throw new InternalServerErrorException();
     }
   }
 }
