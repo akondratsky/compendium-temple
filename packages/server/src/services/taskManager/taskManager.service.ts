@@ -23,9 +23,11 @@ export class TaskManagerService implements ITaskManagerService {
     private readonly auth: AuthService,
   ) {}
 
+  private readonly logger = new Logger(TaskManagerService.name);
+
   public async getAvailableOrCreateTask(): Promise<TaskWithPayload<TaskType>> {
     const task = await this.tasks.findAvailable() as TaskGeneric<TaskType>;
-    Logger.debug(`Found task: ${task?.id}`);
+    this.logger.debug(`Found task: ${task?.id}`);
 
     if (task !== null) {
       await this.tasks.updateRequestedTime(task);
@@ -38,13 +40,13 @@ export class TaskManagerService implements ITaskManagerService {
   }
 
   public async createDetailRepoTasks(repos: MinimalRepository[]): Promise<void> {
-    Logger.debug(`Creating detail repo tasks, repoIds: [${repos.map((repo) => repo.id).join(',')}]`);
+    this.logger.debug(`Creating detail repo tasks, repoIds: [${repos.map((repo) => repo.id).join(',')}]`);
     const tasks = repos.map((repo) => this.tasks.createDetailRepoTask(repo.id));
     await Promise.all(tasks);
   }
 
   public async createGetDepsTasks(repos: MinimalRepository[]): Promise<void> {
-    Logger.debug(`Creating get deps tasks, repoIds: [${repos.map((repo) => repo.id).join(',')}]`);
+    this.logger.debug(`Creating get deps tasks, repoIds: [${repos.map((repo) => repo.id).join(',')}]`);
     const tasks = repos.map((repo) => this.tasks.createGetDepsTask(repo.id));
     await Promise.all(tasks);
   }

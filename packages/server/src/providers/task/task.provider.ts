@@ -1,5 +1,5 @@
 import { TaskGeneric, TaskWithPayload } from '@compendium-temple/api';
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Task, TaskType } from '@prisma/client';
 import dayjs from 'dayjs';
 import { DbClient } from '../../dataAccess/db';

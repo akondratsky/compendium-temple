@@ -20,6 +20,7 @@ export interface IAuthService {
 export class AuthService implements IAuthService {
   private token: string;
   private currentUser?: CompendiumUser;
+  private readonly logger = new Logger(AuthService.name);
 
   constructor(
     @Inject(REQUEST) request: Request,
@@ -33,7 +34,7 @@ export class AuthService implements IAuthService {
 
   public getCurrentUser() {
     if (!this.currentUser) {
-      Logger.error('Current user was not initialized');
+      this.logger.error('Current user was not initialized');
       throw new InternalServerErrorException('Current user not found');
     }
     return this.currentUser;
@@ -49,9 +50,9 @@ export class AuthService implements IAuthService {
   public async authenticate(): Promise<boolean> {
     const hash = await this.hash.calc(this.token);
     
-    Logger.debug(`Authenticating with token ${this.token}`);
+    this.logger.debug(`Authenticating with token ${this.token}`);
     const compendiumUser = await this.compendiumUser.getByHash(hash);
-    Logger.debug(`Found user: ${compendiumUser?.id}`);
+    this.logger.debug(`Found user: ${compendiumUser?.id}`);
 
     if (compendiumUser) {
       this.currentUser = compendiumUser;
@@ -60,11 +61,11 @@ export class AuthService implements IAuthService {
 
     let githubUser: GitHubUser;
     try {
-      Logger.debug(`Fetching GitHub user with token: ${this.token}`);
+      this.logger.debug(`Fetching GitHub user with token: ${this.token}`);
       githubUser = await this.octokit.getAuthenticatedUser(this.token);
-      Logger.debug(`Fetched GitHub user: ${githubUser.id}`);
+      this.logger.debug(`Fetched GitHub user: ${githubUser.id}`);
     } catch (e) {
-      Logger.error(`Error fetching GitHub user: ${(e as Error).message}`);
+      this.logger.error(`Error fetching GitHub user: ${(e as Error).message}`);
       throw new UnauthorizedException();
     }
 
@@ -79,9 +80,9 @@ export class AuthService implements IAuthService {
         this.githubUser.upsert(githubUser),
         this.compendiumUser.upsert(this.currentUser),
       ]);
-      Logger.debug(`Upserted user: ${this.currentUser.id}`);
+      this.logger.debug(`Upserted user: ${this.currentUser.id}`);
     } catch (e) {
-      Logger.error(`Error upserting user: ${(e as Error).message}`);
+      this.logger.error(`Error upserting user: ${(e as Error).message}`);
       throw new InternalServerErrorException(e);
     }
 

@@ -127,7 +127,7 @@ describe('Normal Flow', () => {
         error = e as AxiosError;
       }
     });
-
+    
     afterAll(() => {
       error = undefined;
     });

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Logger, Post, UseGuards } from '@nestjs/common';
 import { TaskType } from '@prisma/client';
 import { ResultsService } from '../services/results';
 import { AuthGuard } from '../auth.guard';
@@ -12,8 +12,11 @@ export class ResultsController {
     private readonly resultsService: ResultsService,
   ) { }
 
+  private readonly logger = new Logger(ResultsController.name);
+
   @Post()
   async returnResult(@Body() repository: ResultDto<TaskType>) {
+    this.logger.log('POST /result');
     await this.resultsService.saveResult(repository as Result<TaskType>);
   }
 }

@@ -19,6 +19,8 @@ export class ListReposResultService implements IListReposResultService {
     private readonly mapper: MapperUtil,
   ) { }
 
+  private readonly logger = new Logger(ListReposResultService.name);
+
   /**
    * Saves owners, code of conducts, licenses and repositories from GitHub API response
    */
@@ -39,7 +41,7 @@ export class ListReposResultService implements IListReposResultService {
         'key'
       );
 
-      Logger.debug(
+      this.logger.debug(
         'Saving list repos result...'
         + ` Repo:${repos.length} Own:${owners.length} CoC:${codeOfConducts.length} Lic:${licenses.length}`
       );
@@ -71,6 +73,7 @@ export class ListReposResultService implements IListReposResultService {
         })),
       );
     } catch (e) {
+      this.logger.error(`Error saving list repos result: ${(e as Error).message}`);
       throw new InternalServerErrorException(e);
     }
   }

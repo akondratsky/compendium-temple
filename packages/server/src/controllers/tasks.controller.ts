@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, Logger, Post, UseGuards } from '@nestjs/common';
 import { TaskManagerService } from '../services/taskManager';
 import { AuthGuard } from '../auth.guard';
 
@@ -9,8 +9,11 @@ export class TasksController {
     private readonly tasksService: TaskManagerService,
   ) {}
 
+  private readonly logger = new Logger(TasksController.name);
+
   @Post()
   async createTask() {
+    this.logger.log('POST /task')
     return this.tasksService.getAvailableOrCreateTask();
   }
 }

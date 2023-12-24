@@ -16,10 +16,12 @@ export class CompendiumUserProvider implements ICompendiumUserProvider {
     private readonly db: DbClient,
   ) { }
 
+  private readonly logger = new Logger(CompendiumUserProvider.name);
+
   /** Get by GitHub token hash */
   public async getByHash(hash: string): Promise<CompendiumUser | null> {
     try {
-      Logger.debug(`Looking for user by hash ${hash}`);
+      this.logger.debug(`Looking for user by hash ${hash}`);
       return this.db.compendiumUser.findFirst({
         where: { hash }
       });
