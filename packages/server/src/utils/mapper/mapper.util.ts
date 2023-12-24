@@ -96,13 +96,15 @@ export class MapperUtil implements IMapperUtil {
       hasDiscussions: repo.has_discussions || null,
       hasWiki: repo.has_wiki || null,
       homepage: repo.homepage || null,
-      isArchived: repo.archived || null,
+      isDisabled: repo.disabled ?? null,
+      isArchived: repo.archived ?? null,
       isAdvancedSecurityEnabled: this.enabledStatus(repo.security_and_analysis?.advanced_security?.status),
       isDependabotSecurityUpdatesEnabled: this.enabledStatus(
         repo.security_and_analysis?.dependabot_security_updates?.status
       ),
+      isTemplate: repo.is_template ?? null,
       isFork: repo.fork,
-      isForkingAllowed: repo.allow_forking || null,
+      isForkingAllowed: repo.allow_forking ?? null,
       isSecretsScanningEnabled: this.enabledStatus(repo.security_and_analysis?.secret_scanning?.status),
       isSecretsScanningPushProtectionEnabled: this.enabledStatus(
         repo.security_and_analysis?.secret_scanning_push_protection?.status,

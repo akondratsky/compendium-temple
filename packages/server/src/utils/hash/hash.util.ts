@@ -8,6 +8,6 @@ export interface IHashUtil {
 @Injectable()
 export class HashUtil implements IHashUtil {
   public async calc(value: string) {
-    return hash(value + process.env.AUTH_TOKEN_HASH_SALT, 10);
+    return hash(value + process.env.SERVER_AUTH_TOKEN_HASH_SALT, 10);
   }
 }

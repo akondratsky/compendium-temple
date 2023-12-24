@@ -1,0 +1,1 @@
+export { githubListReposResponse } from './githubListReposResponse';

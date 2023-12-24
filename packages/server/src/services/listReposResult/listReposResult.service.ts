@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import {
   MinimalRepository,
   CodeOfConduct as CodeOfConductResponse,
@@ -20,7 +20,7 @@ export class ListReposResultService implements IListReposResultService {
   ) { }
 
   /**
-   * Saves owners, code of conducts, licenses and repositories from GitHub list repositories API response
+   * Saves owners, code of conducts, licenses and repositories from GitHub API response
    */
   public async save(repos: MinimalRepository[]): Promise<void> {
     try {
@@ -37,6 +37,11 @@ export class ListReposResultService implements IListReposResultService {
         repos.filter(repo => !!repo.license)
           .map((repo) => this.mapper.license(repo.license as LicenseResponse)),
         'key'
+      );
+
+      Logger.debug(
+        'Saving list repos result...'
+        + ` Repo:${repos.length} Own:${owners.length} CoC:${codeOfConducts.length} Lic:${licenses.length}`
       );
 
       await Promise.all([

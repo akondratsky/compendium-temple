@@ -21,11 +21,9 @@ export class ResultsService implements IResultsService {
   public async saveResult<T extends TaskType>({ taskId, taskType, data }: Result<T>): Promise<void> {
     switch (taskType) {
       case TaskType.LIST_REPOS: {
-        const repos = (data as MinimalRepository[]).filter(
-          (repo) => repo.is_template && repo.visibility === 'public' && !repo.disabled 
-        );
+        const repos = data as MinimalRepository[];
         await this.listReposResult.save(repos);
-        await this.taskManager.createGetDepsTasks(repos);
+        await this.taskManager.createDetailRepoTasks(repos);
         await this.taskManager.markAsDone(taskId)
         break;
       }

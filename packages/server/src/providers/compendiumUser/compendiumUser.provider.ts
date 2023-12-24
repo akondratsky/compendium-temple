@@ -1,5 +1,5 @@
 import { CompendiumUser } from '@prisma/client';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { DbClient } from '../../dataAccess/db';
 
 export interface ICompendiumUserProvider {
@@ -19,6 +19,7 @@ export class CompendiumUserProvider implements ICompendiumUserProvider {
   /** Get by GitHub token hash */
   public async getByHash(hash: string): Promise<CompendiumUser | null> {
     try {
+      Logger.debug(`Looking for user by hash ${hash}`);
       return this.db.compendiumUser.findFirst({
         where: { hash }
       });

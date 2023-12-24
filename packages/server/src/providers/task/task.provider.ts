@@ -1,5 +1,5 @@
 import { TaskGeneric, TaskWithPayload } from '@compendium-temple/api';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { Task, TaskType } from '@prisma/client';
 import dayjs from 'dayjs';
 import { DbClient } from '../../dataAccess/db';
@@ -7,6 +7,7 @@ import { MissionProvider } from '../mission';
 
 export interface ITaskProvider {
   createListReposTask(compendiumUserId: number): Promise<TaskWithPayload<typeof TaskType.LIST_REPOS>>;
+  createDetailRepoTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.DETAIL_REPO>>;
   createGetDepsTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.GET_DEPS>>;
   updateRequestedTime(task: Task): Promise<void>;
   findAvailable(): Promise<Task | null>;
@@ -48,6 +49,32 @@ export class TaskProvider implements ITaskProvider {
           },
         })
 
+        return { ...task, ...payload };
+      });
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  public async createDetailRepoTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.DETAIL_REPO>> {
+    try {
+      return await this.db.$transaction(async (tx) => {
+        const task = await tx.task.create({
+          data: {
+            type: TaskType.DETAIL_REPO,
+            compendiumUserId: null,
+            isDone: false,
+            requestTime: null,
+          },
+        }) as TaskGeneric<typeof TaskType.DETAIL_REPO>;
+  
+        const payload = await tx.detailRepoPayload.create({
+          data: {
+            taskId: task.id,
+            repoId,
+          },
+        });
+  
         return { ...task, ...payload };
       });
     } catch (e) {

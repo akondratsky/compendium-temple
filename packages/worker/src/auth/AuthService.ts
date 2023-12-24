@@ -34,8 +34,6 @@ export class AuthService implements IAuthService {
   public async authorize(): Promise<void> {
     this._accessToken = await getPassword(this.SERVICE_NAME, this.ACCOUNT_NAME);
 
-    console.log(this._accessToken);
-
     if (this._accessToken !== null) {
       this.logger.debug('Authorized: token was found in the key vault');
       return;

@@ -93,7 +93,7 @@ export interface MinimalRepository {
   subscribers_count?: number
   network_count?: number
   code_of_conduct?: CodeOfConduct
-  license: License | null
+  license?: License | null
   forks?: number
   open_issues?: number
   watchers?: number

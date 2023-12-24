@@ -6,10 +6,12 @@ import { OctokitClient } from '../dataAccess/octokit';
 import { HashUtil } from '../utils/hash';
 import { DbClient } from '../dataAccess/db';
 import { MapperUtil } from '../utils/mapper';
+import { AuthGuard } from '../auth.guard';
 
 @Module({
   providers: [
     AuthService,
+    AuthGuard,
     GithubUserProvider,
     CompendiumUserProvider,
     OctokitClient,
