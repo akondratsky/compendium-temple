@@ -2,10 +2,12 @@ import { inject, singleton } from 'tsyringe';
 import { AuthService, IAuthService } from '../auth';
 import { Octokit } from '@octokit/core';
 import { MinimalRepository, RateLimit } from '@compendium-temple/api';
+import { ResponseHeaders } from '@octokit/types';
 
 export interface IGithubService {
   getRateLimit(): Promise<RateLimit>;
-  listRepos(since: number): Promise<MinimalRepository[]>;
+  listRepos(since: number): Promise<{ data: MinimalRepository[]; rateLimit: RateLimit }>;
+  getRepo(owner: string, repo: string): Promise<{ data: MinimalRepository; rateLimit: RateLimit }>;
 }
 
 
@@ -29,13 +31,39 @@ export class GithubService implements IGithubService {
     return data.rate;
   }
 
-  public async listRepos(since: number): Promise<MinimalRepository[]> {
-    const { data } = await this.octokit.request('GET /repositories', {
+  public async listRepos(since: number): Promise<{ data: MinimalRepository[]; rateLimit: RateLimit }> {
+    const { data, headers } = await this.octokit.request('GET /repositories', {
       since,
       headers: {
         'X-GitHub-Api-Version': '2022-11-28',
       },
     });
-    return data;
+    return {
+      data: data as MinimalRepository[],
+      rateLimit: this.getRateLimitFromHeaders(headers),
+    };
+  }
+
+  public async getRepo(owner: string, repo: string): Promise<{ data: MinimalRepository; rateLimit: RateLimit }> {
+    const { data, headers } = await this.octokit.request('GET /repos/{owner}/{repo}', {
+      owner,
+      repo,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+    return {
+      data: data as MinimalRepository,
+      rateLimit: this.getRateLimitFromHeaders(headers),
+    }
+  }
+
+  private getRateLimitFromHeaders(headers: ResponseHeaders): RateLimit {
+    return {
+      limit: parseInt(headers['x-ratelimit-limit'] as string),
+      remaining: parseInt(headers['x-ratelimit-remaining'] as string),
+      reset: parseInt(headers['x-ratelimit-reset'] as string),
+      used: parseInt(headers['x-ratelimit-used'] as string),
+    };
   }
 }

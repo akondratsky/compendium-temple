@@ -5,6 +5,7 @@ import timezone from 'dayjs/plugin/timezone';
 
 export interface ITimeService {
   getTimeDifferenceInMilliseconds(timestamp: number): number;
+  waitUntil(timestamp: number): Promise<void>;
 }
 
 @singleton()
@@ -23,5 +24,10 @@ export class TimeService implements ITimeService {
 
   public utcDate(date: string): Date {
     return dayjs(date).toDate();
+  }
+
+  public async waitUntil(timestamp: number): Promise<void> {
+    const waitTime = this.getTimeDifferenceInMilliseconds(timestamp);
+    return new Promise((resolve) => setTimeout(resolve, waitTime));
   }
 }

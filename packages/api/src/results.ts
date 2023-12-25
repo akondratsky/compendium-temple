@@ -3,8 +3,8 @@ import { MinimalRepository } from './github';
 
 export type ResultDataTypeMap = {
   [TaskType.LIST_REPOS]: MinimalRepository[];
+  [TaskType.DETAIL_REPO]: MinimalRepository;
   [TaskType.GET_DEPS]: unknown;
-  [TaskType.DETAIL_REPO]: unknown;
 };
 
 export type Result<T extends TaskType> = {

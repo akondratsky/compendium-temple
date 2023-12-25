@@ -137,8 +137,8 @@ describe('Normal Flow', () => {
       expect(error).toBeUndefined();
       expect(response.status).toBe(201);
       expect(response.data.type).toBe(TaskType.DETAIL_REPO);
-      expect(['mojombo', 'jamesgolick', 'collectiveidea']).toContain(response.data.owner);
-      expect(['audited', 'markaby', 'grit']).toContain(response.data.repo);
+      expect(response.data.owner).toBeOneOf(['mojombo', 'jamesgolick', 'collectiveidea']);
+      expect(response.data.repo).toBeOneOf(['audited', 'markaby', 'grit']);
     });
 
     it('assigns task to current user', async () => {
@@ -150,6 +150,6 @@ describe('Normal Flow', () => {
   });
 
   describe('save details repo task result', () => {
-    // TODO: implement
+    // TODO: implement 
   });
 });

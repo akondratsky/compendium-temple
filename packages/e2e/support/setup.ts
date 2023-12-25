@@ -1,4 +1,7 @@
 import axios from 'axios';
+import * as matchers from 'jest-extended';
+
+expect.extend(matchers);
 
 const validateEnv = (variables: string[]) => variables.forEach((variable) => {
   if (!process.env[variable]) {

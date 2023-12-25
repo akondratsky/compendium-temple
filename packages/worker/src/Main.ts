@@ -1,11 +1,7 @@
 import { inject, singleton } from 'tsyringe';
 import { ConfigService, IConfigService } from './config';
 import { AuthService, IAuthService } from './auth';
-
-
-// import { ConfigService, IConfigService } from '@compendium-temple/config';
-// import { ITaskRunnerService, TaskRunnerService } from '../services/taskRunner';
-
+import { TaskRunnerService, ITaskRunnerService } from './taskRunner';
 
 /**
  * Main class used to run worker
@@ -15,6 +11,7 @@ export class Main {
   constructor(
     @inject(ConfigService) private config: IConfigService,
     @inject(AuthService) private auth: IAuthService,
+    @inject(TaskRunnerService) private taskRunner: ITaskRunnerService,
   ) { }
 
   /**
@@ -23,5 +20,6 @@ export class Main {
   public async start() {
     this.config.init();
     await this.auth.authorize();
+    await this.taskRunner.run();
   }
 }

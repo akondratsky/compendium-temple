@@ -2,7 +2,7 @@
 export default {
   displayName: 'e2e',
   preset: '../../jest.preset.js',
-  setupFiles: ['<rootDir>/support/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/support/setup.ts'],
   maxWorkers: 1,
   testEnvironment: 'node',
   transform: {

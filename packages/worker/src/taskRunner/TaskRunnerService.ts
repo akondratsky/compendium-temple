@@ -6,8 +6,12 @@ import { GithubService, IGithubService } from '../github';
 import { ConfigService, IConfigService } from '../config';
 import { ITimeService, TimeService } from '../time';
 
+export interface ITaskRunnerService {
+  run(): Promise<void>;
+}
+
 @injectable()
-export class TaskRunnerService {
+export class TaskRunnerService implements ITaskRunnerService {
   constructor(
     @inject(CompendiumService) private readonly compendium: ICompendiumService,
     @inject(GithubService) private readonly github: IGithubService,
@@ -16,18 +20,12 @@ export class TaskRunnerService {
   ) { }
 
   private isRunning = true;
-  private requestsMade = 0;
 
   public async run() {
     while (this.isRunning) {
       const rateLimit = await this.runSession();
-      await this.sleepUntilReset(rateLimit);
+      await this.time.waitUntil(rateLimit.reset);
     }
-  }
-
-  private async sleepUntilReset({ reset }: RateLimit): Promise<void> {
-    const waitTime = this.time.getTimeDifferenceInMilliseconds(reset);
-    return new Promise((resolve) => setTimeout(resolve, waitTime));
   }
 
   /**
@@ -35,33 +33,34 @@ export class TaskRunnerService {
    */
   private async runSession(): Promise<RateLimit> {
     let rateLimit = await this.github.getRateLimit();
-
     while (this.isRunning && rateLimit.remaining > this.config.remainingLimit) {
-      await this.performTask();
-
-      this.requestsMade++;
-
-      // we want to throttle rate limit requests a bit to make less number of requests
-      if (this.requestsMade > 9) {
-        rateLimit = await this.github.getRateLimit();
-      }
+      rateLimit = await this.performTask();
     }
-
     return rateLimit;
   }
 
-  private async performTask<T extends TaskType>() {
+  private async performTask<T extends TaskType>(): Promise<RateLimit> {
     const task = await this.compendium.getTask<T>();
     switch (task.type) {
       case TaskType.LIST_REPOS: {
         const { since } = task as TaskWithPayload<typeof TaskType.LIST_REPOS>;
-        const repos = await this.github.listRepos(since);
-        await this.compendium.sendResult({
+        const { data, rateLimit } = await this.github.listRepos(since);
+        await this.compendium.sendResult<typeof TaskType.LIST_REPOS>({
           taskId: task.id,
           taskType: task.type,
-          data: repos,
+          data,
         });
-        break;
+        return rateLimit;
+      }
+      case TaskType.DETAIL_REPO: {
+        const { owner, repo } = task as TaskWithPayload<typeof TaskType.DETAIL_REPO>;
+        const { data, rateLimit } = await this.github.getRepo(owner, repo);
+        await this.compendium.sendResult<typeof TaskType.DETAIL_REPO>({
+          taskId: task.id,
+          taskType: task.type,
+          data,
+        });
+        return rateLimit;
       }
       case TaskType.GET_DEPS: {
         // TODO: perform get deps task
