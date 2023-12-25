@@ -6,7 +6,8 @@ import { env } from '../support/env';
 import { githubListReposResponse } from '../support/stubs';
 
 describe('Normal Flow', () => {
-  let taskId: number;
+  let listReposTaskId: number;
+  let detailRepoTask: number;
 
   beforeAll(async () => {
     await resetDatabase();
@@ -20,7 +21,7 @@ describe('Normal Flow', () => {
     beforeAll(async () => {
       try {
         response = await axios.post<TaskWithPayload<typeof TaskType.LIST_REPOS>>('/task');
-        taskId = response.data.id;
+        listReposTaskId = response.data.id;
       } catch (e) {
         error = e as AxiosError;
       }
@@ -67,7 +68,7 @@ describe('Normal Flow', () => {
     beforeAll(async () => {
       try {
         response = await axios.post('/result', {
-          taskId,
+          taskId: listReposTaskId,
           taskType: TaskType.LIST_REPOS,
           data: githubListReposResponse,
         });
@@ -108,21 +109,21 @@ describe('Normal Flow', () => {
     });
 
     it('marks task as completed in db', async () => {
-      const task = await db.task.findUnique({ where: { id: taskId } });
+      const task = await db.task.findUnique({ where: { id: listReposTaskId } });
       expect(task).toBeDefined();
       expect(task?.compendiumUserId).toBe(env.githubUserId);
       expect(task?.isDone).toBe(true);
     });
   });
 
-  describe('get next task', () => {
+  describe('get detail repo task', () => {
     let response: AxiosResponse<TaskWithPayload<typeof TaskType.DETAIL_REPO>>;
     let error: AxiosError | undefined;
 
     beforeAll(async () => {
       try {
         response = await axios.post<TaskWithPayload<typeof TaskType.DETAIL_REPO>>('/task');
-        taskId = response.data.id;
+        detailRepoTask = response.data.id;
       } catch (e) {
         error = e as AxiosError;
       }
@@ -136,9 +137,19 @@ describe('Normal Flow', () => {
       expect(error).toBeUndefined();
       expect(response.status).toBe(201);
       expect(response.data.type).toBe(TaskType.DETAIL_REPO);
-      expect(response.data.repoId).toBe(githubListReposResponse[0].id);
+      expect(['mojombo', 'jamesgolick', 'collectiveidea']).toContain(response.data.owner);
+      expect(['audited', 'markaby', 'grit']).toContain(response.data.repo);
     });
 
-    
+    it('assigns task to current user', async () => {
+      const task = await db.task.findUnique({ where: { id: detailRepoTask } });
+      expect(task).toBeDefined();
+      expect(task?.compendiumUserId).toBe(env.githubUserId);
+      expect(task?.requestTime).not.toBeNull();
+    });
+  });
+
+  describe('save details repo task result', () => {
+    // TODO: implement
   });
 });

@@ -1,4 +1,4 @@
-import { TaskGeneric, TaskWithPayload } from '@compendium-temple/api';
+import { MinimalRepository, TaskGeneric, TaskWithPayload } from '@compendium-temple/api';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { Task, TaskType } from '@prisma/client';
 import dayjs from 'dayjs';
@@ -7,7 +7,7 @@ import { MissionProvider } from '../mission';
 
 export interface ITaskProvider {
   createListReposTask(compendiumUserId: number): Promise<TaskWithPayload<typeof TaskType.LIST_REPOS>>;
-  createDetailRepoTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.DETAIL_REPO>>;
+  createDetailRepoTask(repo: MinimalRepository): Promise<TaskWithPayload<typeof TaskType.DETAIL_REPO>>;
   createGetDepsTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.GET_DEPS>>;
   assignTask(task: Task, compendiumUserId: number): Promise<void>;
   findAvailable(): Promise<Task | null>;
@@ -59,7 +59,7 @@ export class TaskProvider implements ITaskProvider {
     }
   }
 
-  public async createDetailRepoTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.DETAIL_REPO>> {
+  public async createDetailRepoTask(repo: MinimalRepository): Promise<TaskWithPayload<typeof TaskType.DETAIL_REPO>> {
     try {
       return await this.db.$transaction(async (tx) => {
         const task = await tx.task.create({
@@ -74,7 +74,8 @@ export class TaskProvider implements ITaskProvider {
         const payload = await tx.detailRepoPayload.create({
           data: {
             taskId: task.id,
-            repoId,
+            owner: repo.owner.login,
+            repo: repo.name,
           },
         });
   

@@ -70,11 +70,12 @@ model ListReposPayload {
 /// Payload for get dependencies task
 model DetailRepoPayload {
   /// Task ID this payload belongs to
-  taskId Int  @id
-  task   Task @relation(fields: [taskId], references: [id])
-
-  /// Repo ID to get dependencies for
-  repoId Int
+  taskId Int    @id
+  task   Task   @relation(fields: [taskId], references: [id])
+  /// owner login
+  owner  String
+  /// repo name
+  repo   String
 }
 
 /// Payload for get dependencies task

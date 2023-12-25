@@ -41,7 +41,7 @@ export class TaskManagerService implements ITaskManagerService {
 
   public async createDetailRepoTasks(repos: MinimalRepository[]): Promise<void> {
     this.logger.debug(`Creating detail repo tasks, repoIds: [${repos.map((repo) => repo.id).join(',')}]`);
-    const tasks = repos.map((repo) => this.tasks.createDetailRepoTask(repo.id));
+    const tasks = repos.map((repo) => this.tasks.createDetailRepoTask(repo));
     await Promise.all(tasks);
   }
 

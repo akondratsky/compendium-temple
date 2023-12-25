@@ -27,6 +27,9 @@ export class ResultsService implements IResultsService {
         await this.taskManager.markAsDone(taskId)
         break;
       }
+      case TaskType.DETAIL_REPO: {
+        break;
+      }
       case TaskType.GET_DEPS: {
         throw new NotImplementedException();
         break;
