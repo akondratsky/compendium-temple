@@ -126,4 +126,12 @@ export class MapperUtil implements IMapperUtil {
     }
   }
 
+  public minimalRepository(repo: MinimalRepository): Repository {
+    return this.repository({
+      ...repo,
+      code_of_conduct: undefined,
+      license: undefined,
+    });
+  }
+
 }

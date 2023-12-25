@@ -3,7 +3,7 @@ import { TaskWithPayload } from '@compendium-temple/api';
 import { db, resetDatabase } from '../support/database';
 import { TaskType } from '@prisma/client';
 import { env } from '../support/env';
-import { githubListReposResponse } from '../support/stubs';
+import { githubResponse } from '../support/stubs';
 
 describe('Normal Flow', () => {
   let listReposTaskId: number;
@@ -70,7 +70,7 @@ describe('Normal Flow', () => {
         response = await axios.post('/result', {
           taskId: listReposTaskId,
           taskType: TaskType.LIST_REPOS,
-          data: githubListReposResponse,
+          data: githubResponse.listRepos,
         });
       } catch (e) {
         error = e as AxiosError;
@@ -129,9 +129,6 @@ describe('Normal Flow', () => {
       }
     });
     
-    afterAll(() => {
-      error = undefined;
-    });
 
     it('server returns task', async () => {
       expect(error).toBeUndefined();
@@ -149,7 +146,83 @@ describe('Normal Flow', () => {
     });
   });
 
-  describe('save details repo task result', () => {
-    // TODO: implement 
+  describe('save details repo task result for public template', () => {
+    let response: AxiosResponse;
+    let error: AxiosError | undefined;
+
+    beforeAll(async () => {
+      try {
+        response = await axios.post('/result', {
+          taskId: detailRepoTask,
+          taskType: TaskType.DETAIL_REPO,
+          data: githubResponse.getRepo.template,
+        });
+      } catch (e) {
+        error = e as AxiosError;
+      }
+    });
+
+    it('returns response status 201', async () => {
+      expect(error).toBeUndefined();
+      expect(response).toBeDefined();
+      expect(response.status).toBe(201);
+    });
+
+    it('marks task as done in db', async () => {
+      const task = await db.task.findUnique({ where: { id: detailRepoTask } });
+      expect(task).toBeDefined();
+      expect(task?.isDone).toBe(true);
+    });
+
+    it('creates new get deps task in db', async () => {
+      const tasks = await db.task.findMany({
+        where: { type: TaskType.GET_DEPS }
+      });
+      expect(tasks).toHaveLength(1);
+      const payloads = await db.getDepsPayload.findMany();
+      expect(payloads).toHaveLength(1);
+    });
+  });
+
+  describe('save details repo task result for regular repo', () => {
+    let response: AxiosResponse;
+    let error: AxiosError | undefined;
+
+    it('takes new detail repo task', async () => {
+      const { data: { taskId, type } } = await axios.post<TaskWithPayload<typeof TaskType.DETAIL_REPO>>('/task');
+
+      expect(type).toBe(TaskType.DETAIL_REPO);
+
+      try {
+        response = await axios.post('/result', {
+          taskId,
+          taskType: TaskType.DETAIL_REPO,
+          data: githubResponse.getRepo.regular,
+        });
+      } catch (e) {
+        error = e as AxiosError;
+      }
+    });
+
+    it('returns response status 201', async () => {
+      expect(error).toBeUndefined();
+      expect(response).toBeDefined();
+      expect(response.status).toBe(201);
+    });
+
+    it('marks task as done in db', async () => {
+      const task = await db.task.findUnique({ where: { id: detailRepoTask } });
+      expect(task).toBeDefined();
+      expect(task?.isDone).toBe(true);
+    });
+
+    it('does not create new get deps task in db', async () => {
+      const tasks = await db.task.findMany({
+        where: { type: TaskType.GET_DEPS }
+      });
+      expect(tasks).toHaveLength(1);
+      const payloads = await db.getDepsPayload.findMany();
+      expect(payloads).toHaveLength(1);
+    });
   });
 });

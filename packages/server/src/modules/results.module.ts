@@ -6,6 +6,7 @@ import { ListReposResultService } from '../services/listReposResult';
 import { TaskManagerModule } from './taskManager.module';
 import { DbClient } from '../dataAccess/db';
 import { MapperUtil } from '../utils/mapper';
+import { DetailRepoResultService } from '../services/detailsRepoResult';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MapperUtil } from '../utils/mapper';
   providers: [
     ResultsService,
     ListReposResultService,
+    DetailRepoResultService,
     DbClient,
     MapperUtil,
   ],

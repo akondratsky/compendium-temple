@@ -6,6 +6,7 @@ import { Injectable, NotImplementedException } from '@nestjs/common';
 import { TaskType } from '@prisma/client';
 import { ListReposResultService } from '../listReposResult';
 import { TaskManagerService } from '../taskManager';
+import { DetailRepoResultService } from '../detailsRepoResult';
 
 export interface IResultsService {
   saveResult<T extends TaskType>(result: Result<T>): Promise<void>;
@@ -15,6 +16,7 @@ export interface IResultsService {
 export class ResultsService implements IResultsService {
   constructor(
     private readonly listReposResult: ListReposResultService,
+    private readonly detailRepoResult: DetailRepoResultService,
     private readonly taskManager: TaskManagerService,
   ) {}
 
@@ -24,10 +26,14 @@ export class ResultsService implements IResultsService {
         const repos = data as MinimalRepository[];
         await this.listReposResult.save(repos);
         await this.taskManager.createDetailRepoTasks(repos);
-        await this.taskManager.markAsDone(taskId)
         break;
       }
       case TaskType.DETAIL_REPO: {
+        const repo = data as MinimalRepository;
+        await this.detailRepoResult.save(repo);
+        if (repo.is_template && repo.visibility === 'public' && !repo.disabled) {
+          await this.taskManager.createGetDepsTask(repo);
+        }
         break;
       }
       case TaskType.GET_DEPS: {
@@ -37,5 +43,6 @@ export class ResultsService implements IResultsService {
       default:
         throw new Error(`Unknown task type: ${taskType}`);
     }
+    await this.taskManager.markAsDone(taskId);
   }
 }

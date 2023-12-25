@@ -1,4 +1,4 @@
-export const githubGitRepoResponse = {
+export const regularRepoResponse = {
   "id": 700595968,
   "node_id": "R_kgDOKcI_AA",
   "name": "metagen",

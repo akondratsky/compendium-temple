@@ -1,5 +1,5 @@
 // part of real response from github api
-export const githubListReposResponse = [
+export const listReposResponse = [
   {
     "id": 1,
     "node_id": "MDEwOlJlcG9zaXRvcnkx",

@@ -1,1 +1,1 @@
-export { githubListReposResponse } from './githubListReposResponse';
+export { githubResponse } from './githubResponse';

@@ -1,8 +1,6 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import {
   MinimalRepository,
-  CodeOfConduct as CodeOfConductResponse,
-  License as LicenseResponse,
 } from '@compendium-temple/api';
 import { uniqBy } from 'lodash';
 import { MapperUtil } from '../../utils/mapper';
@@ -30,21 +28,8 @@ export class ListReposResultService implements IListReposResultService {
         repos.map(({ owner }) => this.mapper.ownerToGithubUser(owner)),
         'id'
       );
-      const codeOfConducts = uniqBy(
-        repos.filter(repo => !!repo.code_of_conduct)
-          .map((repo) => this.mapper.codeOfConduct(repo.code_of_conduct as CodeOfConductResponse)),
-        'key'
-      );
-      const licenses = uniqBy(
-        repos.filter(repo => !!repo.license)
-          .map((repo) => this.mapper.license(repo.license as LicenseResponse)),
-        'key'
-      );
 
-      this.logger.debug(
-        'Saving list repos result...'
-        + ` Repo:${repos.length} Own:${owners.length} CoC:${codeOfConducts.length} Lic:${licenses.length}`
-      );
+      this.logger.debug(`Saving list repos result... Repos: ${repos.length} Owners: ${owners.length}`);
 
       await Promise.all([
         ...owners.map((owner) => this.db.gitHubUser.upsert({
@@ -52,20 +37,10 @@ export class ListReposResultService implements IListReposResultService {
           create: owner,
           update: owner,
         })),
-        ...codeOfConducts.map((codeOfConduct) => this.db.codeOfConduct.upsert({
-          where: { key: codeOfConduct.key },
-          create: codeOfConduct,
-          update: codeOfConduct,
-        })),
-        ...licenses.map((license) => this.db.license.upsert({
-          where: { key: license.key },
-          create: license,
-          update: license,
-        })),
       ]);
 
       await Promise.all(repos
-        .map((repo) => this.mapper.repository(repo))
+        .map((repo) => this.mapper.minimalRepository(repo))
         .map((repo) => this.db.repository.upsert({
           where: { id: repo.id },
           create: repo,

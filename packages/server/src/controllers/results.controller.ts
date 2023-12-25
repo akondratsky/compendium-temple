@@ -15,8 +15,8 @@ export class ResultsController {
   private readonly logger = new Logger(ResultsController.name);
 
   @Post()
-  async returnResult(@Body() repository: ResultDto<TaskType>) {
-    this.logger.log('POST /result');
-    await this.resultsService.saveResult(repository as Result<TaskType>);
+  async returnResult(@Body() result: ResultDto<TaskType>) {
+    this.logger.log(`POST /result { taskId: ${result.taskId}, taskType: ${result.taskType} }`);
+    await this.resultsService.saveResult(result as Result<TaskType>);
   }
 }

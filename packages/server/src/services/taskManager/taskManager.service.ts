@@ -10,8 +10,8 @@ import { AuthService } from '../auth';
 
 export interface ITaskManagerService {
   getAvailableOrCreateTask(): Promise<TaskWithPayload<TaskType>>;
-  createGetDepsTasks(repos: MinimalRepository[]): Promise<void>;
   createDetailRepoTasks(repos: MinimalRepository[]): Promise<void>;
+  createGetDepsTask(repo: MinimalRepository): Promise<void>;
   markAsDone(taskId: number): Promise<void>;
 }
 
@@ -45,10 +45,9 @@ export class TaskManagerService implements ITaskManagerService {
     await Promise.all(tasks);
   }
 
-  public async createGetDepsTasks(repos: MinimalRepository[]): Promise<void> {
-    this.logger.debug(`Creating get deps tasks, repoIds: [${repos.map((repo) => repo.id).join(',')}]`);
-    const tasks = repos.map((repo) => this.tasks.createGetDepsTask(repo.id));
-    await Promise.all(tasks);
+  public async createGetDepsTask(repo: MinimalRepository): Promise<void> {
+    this.logger.log(`Creating get dependencies task for repo: ${repo.full_name}`);
+    await this.tasks.createGetDepsTask(repo.id);
   }
 
   public async markAsDone(taskId: number): Promise<void> {
