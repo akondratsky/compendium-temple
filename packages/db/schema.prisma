@@ -88,8 +88,10 @@ model GetDepsPayload {
   taskId Int  @id
   task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
-  /// Repo ID to get dependencies for
-  repoId Int
+  /// owner login
+  owner String
+  /// repo name
+  repo  String
 }
 
 enum GithubUserType {
@@ -152,6 +154,13 @@ model Repository {
   pushedAt  DateTime?
   createdAt DateTime?
   updatedAt DateTime?
+}
+
+model Dependencies {
+  id Int @id
+  repoId Int
+  name         String
+  @@unique([repoId, name])
 }
 
 model GitHubUser {

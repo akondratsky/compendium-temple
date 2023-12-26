@@ -49,7 +49,7 @@ export class TaskManagerService implements ITaskManagerService {
 
   public async createGetDepsTask(repo: MinimalRepository): Promise<void> {
     this.logger.log(`Creating get dependencies task for repo: ${repo.full_name}`);
-    await this.tasks.createGetDepsTask(repo.id);
+    await this.tasks.createGetDepsTask(repo);
   }
 
   public async accomplish(taskId: number): Promise<void> {

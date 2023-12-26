@@ -3,7 +3,6 @@ import { GetDepsPayload } from '@prisma/client';
 import { DbClient } from '../../dataAccess/db';
 
 export interface IGetDepsPayloadProvider {
-  create(taskId: number, repoId: number): Promise<GetDepsPayload>;
   getByTaskId(taskId: number): Promise<GetDepsPayload>;
 }
 
@@ -14,17 +13,6 @@ export class GetDepsPayloadProvider implements IGetDepsPayloadProvider {
   ) { }
 
   private readonly logger = new Logger(GetDepsPayloadProvider.name);
-
-  public async create(taskId: number, repoId: number): Promise<GetDepsPayload> {
-    try {
-      return await this.db.getDepsPayload.create({
-        data: { taskId, repoId }
-      });
-    } catch (e) {
-      this.logger.error((e as Error).message);
-      throw new InternalServerErrorException();
-    }
-  }
 
   public async getByTaskId(taskId: number): Promise<GetDepsPayload> {
     let payload: GetDepsPayload | null;

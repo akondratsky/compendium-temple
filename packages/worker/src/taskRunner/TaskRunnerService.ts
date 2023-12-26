@@ -1,7 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 import { CompendiumService, ICompendiumService } from '../compendium';
 import { TaskType } from '@prisma/client';
-import { RateLimit, TaskWithPayload } from '@compendium-temple/api';
+import { RateLimit, Result, ResultDataTypeMap, SpdxSbom, TaskWithPayload } from '@compendium-temple/api';
 import { GithubService, IGithubService } from '../github';
 import { ConfigService, IConfigService } from '../config';
 import { ITimeService, TimeService } from '../time';
@@ -63,11 +63,26 @@ export class TaskRunnerService implements ITaskRunnerService {
         return rateLimit;
       }
       case TaskType.GET_DEPS: {
-        // TODO: perform get deps task
-        throw new Error('Not implemented');
+        const { owner, repo } = task as TaskWithPayload<typeof TaskType.GET_DEPS>;
+        const { data, rateLimit } = await this.github.getSpdxSbom(owner, repo);
+        await this.compendium.sendResult<typeof TaskType.GET_DEPS>({
+          taskId: task.id,
+          taskType: task.type,
+          data: this.mapSpdxSbom(data),
+        });
+        return rateLimit;
       }
       default:
         throw new Error(`Unknown task type: ${task.type}`);
     }
+  }
+
+  private mapSpdxSbom({ sbom }: SpdxSbom): ResultDataTypeMap[typeof TaskType.GET_DEPS] {
+    return Object.keys(sbom.packages.reduce((deps, { name }) => {
+      if (name?.startsWith('npm:')) {
+        deps[name.slice(4)] = true;
+      }
+      return deps;
+    }, {} as Record<string, true>));
   }
 }

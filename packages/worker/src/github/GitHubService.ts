@@ -1,14 +1,20 @@
 import { inject, singleton } from 'tsyringe';
 import { AuthService, IAuthService } from '../auth';
 import { Octokit } from '@octokit/core';
-import { MinimalRepository, RateLimit } from '@compendium-temple/api';
+import { MinimalRepository, RateLimit, SpdxSbom } from '@compendium-temple/api';
 import { ResponseHeaders } from '@octokit/types';
 
 export interface IGithubService {
   getRateLimit(): Promise<RateLimit>;
   listRepos(since: number): Promise<{ data: MinimalRepository[]; rateLimit: RateLimit }>;
   getRepo(owner: string, repo: string): Promise<{ data: MinimalRepository; rateLimit: RateLimit }>;
+  getSpdxSbom(owner: string, repo: string): Promise<{ data: SpdxSbom; rateLimit: RateLimit }>;
 }
+
+export type GithubResponse<T> = Promise<{
+  data: T;
+  rateLimit: RateLimit;
+}>
 
 
 @singleton()
@@ -31,7 +37,7 @@ export class GithubService implements IGithubService {
     return data.rate;
   }
 
-  public async listRepos(since: number): Promise<{ data: MinimalRepository[]; rateLimit: RateLimit }> {
+  public async listRepos(since: number): GithubResponse<MinimalRepository[]> {
     const { data, headers } = await this.octokit.request('GET /repositories', {
       since,
       headers: {
@@ -44,7 +50,7 @@ export class GithubService implements IGithubService {
     };
   }
 
-  public async getRepo(owner: string, repo: string): Promise<{ data: MinimalRepository; rateLimit: RateLimit }> {
+  public async getRepo(owner: string, repo: string): GithubResponse<MinimalRepository> {
     const { data, headers } = await this.octokit.request('GET /repos/{owner}/{repo}', {
       owner,
       repo,
@@ -54,6 +60,20 @@ export class GithubService implements IGithubService {
     });
     return {
       data: data as MinimalRepository,
+      rateLimit: this.getRateLimitFromHeaders(headers),
+    }
+  }
+
+  public async getSpdxSbom(owner: string, repo: string): GithubResponse<SpdxSbom> {
+    const { data, headers } = await this.octokit.request('GET /repos/{owner}/{repo}/dependency-graph/sbom', {
+      owner,
+      repo,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+    return {
+      data: data as SpdxSbom,
       rateLimit: this.getRateLimitFromHeaders(headers),
     }
   }

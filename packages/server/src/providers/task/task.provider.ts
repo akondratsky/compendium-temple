@@ -8,7 +8,7 @@ import { MissionProvider } from '../mission';
 export interface ITaskProvider {
   createListReposTask(compendiumUserId: number): Promise<TaskWithPayload<typeof TaskType.LIST_REPOS>>;
   createDetailRepoTask(repo: MinimalRepository): Promise<TaskWithPayload<typeof TaskType.DETAIL_REPO>>;
-  createGetDepsTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.GET_DEPS>>;
+  createGetDepsTask(repo: MinimalRepository): Promise<TaskWithPayload<typeof TaskType.GET_DEPS>>;
   assignTask(task: Task, compendiumUserId: number): Promise<void>;
   findAvailable(): Promise<Task | null>;
   delete(taskId: number): Promise<void>;
@@ -85,7 +85,7 @@ export class TaskProvider implements ITaskProvider {
     }
   }
 
-  public async createGetDepsTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.GET_DEPS>> {
+  public async createGetDepsTask(repo: MinimalRepository): Promise<TaskWithPayload<typeof TaskType.GET_DEPS>> {
     try {
       return await this.db.$transaction(async (tx) => {
         const task = await tx.task.create({
@@ -99,7 +99,8 @@ export class TaskProvider implements ITaskProvider {
         const payload = await tx.getDepsPayload.create({
           data: {
             taskId: task.id,
-            repoId,
+            owner: repo.owner.login,
+            repo: repo.name,
           },
         });
   
