@@ -28,7 +28,7 @@ export class ResultsService implements IResultsService {
       case TaskType.DETAIL_REPO: {
         const repo = data as MinimalRepository;
         await this.detailRepoResult.save(repo);
-        if (repo.is_template && repo.visibility === 'public' && !repo.disabled) {
+        if (this.shouldBeInvestigated(repo)) {
           await this.taskManager.createGetDepsTask(repo);
         }
         break;
@@ -41,5 +41,12 @@ export class ResultsService implements IResultsService {
         throw new Error(`Unknown task type: ${taskType}`);
     }
     await this.taskManager.accomplish(taskId);
+  }
+
+  private shouldBeInvestigated(repo: MinimalRepository): boolean {
+    return !!repo.is_template
+      && repo.visibility === 'public'
+      && !repo.disabled
+      && (repo.language === 'TypeScript' || repo.language === 'JavaScript');
   }
 }
