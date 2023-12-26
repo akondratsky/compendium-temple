@@ -9,7 +9,7 @@ datasource db {
 
 /// A Compendium Temple citizen running the worker
 model CompendiumUser {
-  /// User ID
+  /// User ID, same as GitHub user ID
   id    Int     @id
   /// GitHub user's login
   login String
@@ -17,6 +17,13 @@ model CompendiumUser {
   hash  String?
   /// Tasks assigned to the user
   Task  Task[]
+}
+
+model Board {
+  // compendium/github user id
+  userId Int @id
+  // number of accomplished tasks
+  count  Int
 }
 
 enum TaskType {
@@ -39,9 +46,6 @@ model Task {
   /// When this task was list time requested
   requestTime DateTime? @default(now())
 
-  /// true if this task has already been completed
-  isDone Boolean @default(false)
-
   listReposPayload  ListReposPayload[]
   detailRepoPayload DetailRepoPayload[]
   getDepsPayload    GetDepsPayload[]
@@ -61,7 +65,7 @@ model MissionState {
 model ListReposPayload {
   /// Task ID this payload belongs to
   taskId Int  @id
-  task   Task @relation(fields: [taskId], references: [id])
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   /// Repo ID, from which repos will be returned
   since Int
@@ -71,7 +75,7 @@ model ListReposPayload {
 model DetailRepoPayload {
   /// Task ID this payload belongs to
   taskId Int    @id
-  task   Task   @relation(fields: [taskId], references: [id])
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
   /// owner login
   owner  String
   /// repo name
@@ -82,7 +86,7 @@ model DetailRepoPayload {
 model GetDepsPayload {
   /// Task ID this payload belongs to
   taskId Int  @id
-  task   Task @relation(fields: [taskId], references: [id])
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   /// Repo ID to get dependencies for
   repoId Int

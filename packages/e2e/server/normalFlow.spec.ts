@@ -51,7 +51,6 @@ describe('Normal Flow', () => {
     it('creates task with payload in database', async () => {
       const [ task ] = await db.task.findMany();
       expect(task).toBeDefined();
-      expect(task.isDone).toBe(false);
       expect(task.type).toBe(TaskType.LIST_REPOS);
 
       const [ payload ] = await db.listReposPayload.findMany();
@@ -78,8 +77,8 @@ describe('Normal Flow', () => {
     });
   
     it('returns response status 201', async () => {
-      expect(response).toBeDefined();
       expect(error).toBeUndefined();
+      expect(response).toBeDefined();
       expect(response.status).toBe(201);
     });
 
@@ -105,9 +104,7 @@ describe('Normal Flow', () => {
 
     it('marks task as completed in db', async () => {
       const task = await db.task.findUnique({ where: { id: listReposTaskId } });
-      expect(task).toBeDefined();
-      expect(task?.compendiumUserId).toBe(env.githubUserId);
-      expect(task?.isDone).toBe(true);
+      expect(task).toBe(null);
     });
   });
 
@@ -165,8 +162,7 @@ describe('Normal Flow', () => {
 
     it('marks task as done in db', async () => {
       const task = await db.task.findUnique({ where: { id: detailRepoTask } });
-      expect(task).toBeDefined();
-      expect(task?.isDone).toBe(true);
+      expect(task).toBe(null);
     });
 
     it('creates new get deps task in db', async () => {
@@ -207,8 +203,7 @@ describe('Normal Flow', () => {
 
     it('marks task as done in db', async () => {
       const task = await db.task.findUnique({ where: { id: detailRepoTask } });
-      expect(task).toBeDefined();
-      expect(task?.isDone).toBe(true);
+      expect(task).toBe(null);
     });
 
     it('does not create new get deps task in db', async () => {

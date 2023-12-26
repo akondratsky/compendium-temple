@@ -4,6 +4,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { TaskType } from '@prisma/client';
 
 import { TaskProvider } from '../../providers/task';
+import { BoardProvider } from '../../providers/board';
 import { PayloadService } from '../payload';
 import { AuthService } from '../auth';
 
@@ -12,15 +13,16 @@ export interface ITaskManagerService {
   getAvailableOrCreateTask(): Promise<TaskWithPayload<TaskType>>;
   createDetailRepoTasks(repos: MinimalRepository[]): Promise<void>;
   createGetDepsTask(repo: MinimalRepository): Promise<void>;
-  markAsDone(taskId: number): Promise<void>;
+  accomplish(taskId: number): Promise<void>;
 }
 
 @Injectable()
 export class TaskManagerService implements ITaskManagerService {
   constructor(
-    private readonly tasks: TaskProvider,
     private readonly payload: PayloadService,
     private readonly auth: AuthService,
+    private readonly tasks: TaskProvider,
+    private readonly board: BoardProvider,
   ) {}
 
   private readonly logger = new Logger(TaskManagerService.name);
@@ -50,7 +52,8 @@ export class TaskManagerService implements ITaskManagerService {
     await this.tasks.createGetDepsTask(repo.id);
   }
 
-  public async markAsDone(taskId: number): Promise<void> {
-    await this.tasks.markAsDone(taskId);
+  public async accomplish(taskId: number): Promise<void> {
+    await this.board.count(this.auth.getCurrentUserId());
+    await this.tasks.delete(taskId);
   }
 }

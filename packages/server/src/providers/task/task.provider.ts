@@ -11,7 +11,7 @@ export interface ITaskProvider {
   createGetDepsTask(repoId: number): Promise<TaskWithPayload<typeof TaskType.GET_DEPS>>;
   assignTask(task: Task, compendiumUserId: number): Promise<void>;
   findAvailable(): Promise<Task | null>;
-  markAsDone(taskId: number): Promise<void>;
+  delete(taskId: number): Promise<void>;
 }
 
 @Injectable()
@@ -32,7 +32,6 @@ export class TaskProvider implements ITaskProvider {
           data: {
             type: TaskType.LIST_REPOS,
             compendiumUserId,
-            isDone: false,
             requestTime: compendiumUserId ? new Date() : null,
           },
         }) as TaskGeneric<typeof TaskType.LIST_REPOS>;
@@ -66,7 +65,6 @@ export class TaskProvider implements ITaskProvider {
           data: {
             type: TaskType.DETAIL_REPO,
             compendiumUserId: null,
-            isDone: false,
             requestTime: null,
           },
         }) as TaskGeneric<typeof TaskType.DETAIL_REPO>;
@@ -94,7 +92,6 @@ export class TaskProvider implements ITaskProvider {
           data: {
             type: TaskType.GET_DEPS,
             compendiumUserId: null,
-            isDone: false,
             requestTime: null,
           },
         }) as TaskGeneric<typeof TaskType.GET_DEPS>;
@@ -134,12 +131,10 @@ export class TaskProvider implements ITaskProvider {
       const task = await this.db.task.findFirst({
         where: {
           OR: [{
-            isDone: false,
             requestTime: {
               lte: dayjs().utc().subtract(1, 'hour').toDate()
             },
           }, {
-            isDone: false,
             requestTime: null,
           }],
           
@@ -153,18 +148,15 @@ export class TaskProvider implements ITaskProvider {
       this.logger.error((e as Error).message);
       throw new InternalServerErrorException();
     }
-    
   }
 
-  public async markAsDone(taskId: number): Promise<void> {
+  public async delete(taskId: number): Promise<void> {
     try {
-      await this.db.task.update({
+      await this.db.task.delete({
         where: { id: taskId },
-        data: {
-          isDone: true,
-        }
       });
     } catch (e) {
+      this.logger.error((e as Error).message);
       throw new InternalServerErrorException();
     }
   }

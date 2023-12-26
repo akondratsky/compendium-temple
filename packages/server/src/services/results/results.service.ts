@@ -40,6 +40,6 @@ export class ResultsService implements IResultsService {
       default:
         throw new Error(`Unknown task type: ${taskType}`);
     }
-    await this.taskManager.markAsDone(taskId);
+    await this.taskManager.accomplish(taskId);
   }
 }

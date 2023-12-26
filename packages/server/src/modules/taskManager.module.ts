@@ -7,6 +7,7 @@ import { TaskProvider } from '../providers/task';
 import { ListReposPayloadProvider } from '../providers/listReposPayload';
 import { GetDepsPayloadProvider } from '../providers/getDepsPayload';
 import { DetailRepoPayloadProvider } from '../providers/detailRepoPayload';
+import { BoardProvider } from '../providers/board';
 import { DbClient } from '../dataAccess/db';
 
 @Module({
@@ -22,6 +23,7 @@ import { DbClient } from '../dataAccess/db';
     ListReposPayloadProvider,
     GetDepsPayloadProvider,
     DetailRepoPayloadProvider,
+    BoardProvider
   ],
   exports: [
     TaskManagerService,
