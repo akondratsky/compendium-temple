@@ -4,7 +4,6 @@ import {
 } from '@compendium-temple/api';
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { TaskType } from '@prisma/client';
-import { ListReposResultService } from '../listReposResult';
 import { TaskManagerService } from '../taskManager';
 import { DetailRepoResultService } from '../detailsRepoResult';
 
@@ -15,7 +14,6 @@ export interface IResultsService {
 @Injectable()
 export class ResultsService implements IResultsService {
   constructor(
-    private readonly listReposResult: ListReposResultService,
     private readonly detailRepoResult: DetailRepoResultService,
     private readonly taskManager: TaskManagerService,
   ) {}
@@ -24,7 +22,6 @@ export class ResultsService implements IResultsService {
     switch (taskType) {
       case TaskType.LIST_REPOS: {
         const repos = data as MinimalRepository[];
-        await this.listReposResult.save(repos);
         await this.taskManager.createDetailRepoTasks(repos);
         break;
       }

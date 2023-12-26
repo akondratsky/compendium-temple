@@ -83,20 +83,15 @@ describe('Normal Flow', () => {
       expect(response.status).toBe(201);
     });
 
-    it('creates users from owners in db', async () => {
+    it('does not create owners in db', async () => {
       const owners = await db.gitHubUser.findMany();
-      expect(owners).toHaveLength(4);
-      expect(owners.some((owner) => owner.id === 1)).toBe(true);
-      expect(owners.some((owner) => owner.id === 37)).toBe(true);
-      expect(owners.some((owner) => owner.id === 128)).toBe(true);
+      expect(owners).toHaveLength(1);
+      expect(owners[0].id).toBe(env.githubUserId);
     });
 
-    it('creates repos in db', async () => {
+    it('does not creates repos in db', async () => {
       const repos = await db.repository.findMany();
-      expect(repos).toHaveLength(3);
-      expect(repos.some((repo) => repo.id === 1)).toBe(true);
-      expect(repos.some((repo) => repo.id === 73)).toBe(true);
-      expect(repos.some((repo) => repo.id === 363)).toBe(true);
+      expect(repos).toHaveLength(0);
     });
 
     it('creates get repo details tasks in db', async () => {

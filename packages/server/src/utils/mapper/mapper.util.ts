@@ -95,7 +95,7 @@ export class MapperUtil implements IMapperUtil {
       hasIssues: repo.has_issues || null,
       hasPages: repo.has_pages || null,
       hasProjects: repo.has_projects || null,
-      gitHubUserId: repo.owner.id,
+      gitHubUserId: repo.owner?.id ?? null,
       htmlUrl: repo.html_url,
       hasDiscussions: repo.has_discussions || null,
       hasWiki: repo.has_wiki || null,
@@ -125,13 +125,4 @@ export class MapperUtil implements IMapperUtil {
       watchersCount: repo.watchers_count || null,
     }
   }
-
-  public minimalRepository(repo: MinimalRepository): Repository {
-    return this.repository({
-      ...repo,
-      code_of_conduct: undefined,
-      license: undefined,
-    });
-  }
-
 }
