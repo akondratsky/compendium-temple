@@ -6,6 +6,7 @@ import { Injectable, NotImplementedException } from '@nestjs/common';
 import { TaskType } from '@prisma/client';
 import { TaskManagerService } from '../taskManager';
 import { DetailRepoResultService } from '../detailsRepoResult';
+import { DependenciesProvider } from '../../providers/dependencies';
 
 export interface IResultsService {
   saveResult<T extends TaskType>(result: Result<T>): Promise<void>;
@@ -16,6 +17,7 @@ export class ResultsService implements IResultsService {
   constructor(
     private readonly detailRepoResult: DetailRepoResultService,
     private readonly taskManager: TaskManagerService,
+    private readonly dependencies: DependenciesProvider,
   ) {}
 
   public async saveResult<T extends TaskType>({ taskId, taskType, data }: Result<T>): Promise<void> {
@@ -27,14 +29,14 @@ export class ResultsService implements IResultsService {
       }
       case TaskType.DETAIL_REPO: {
         const repo = data as MinimalRepository;
-        await this.detailRepoResult.save(repo);
         if (this.shouldBeInvestigated(repo)) {
+          await this.detailRepoResult.save(repo);
           await this.taskManager.createGetDepsTask(repo);
         }
         break;
       }
       case TaskType.GET_DEPS: {
-        throw new NotImplementedException();
+        this.dependencies.save(taskId, data as string[])
         break;
       }
       default:

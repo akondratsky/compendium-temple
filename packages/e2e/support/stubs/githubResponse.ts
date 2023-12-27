@@ -7,5 +7,5 @@ export const githubResponse = {
   getRepo: {
     regular: regularRepoResponse,
     template: templateRepoResponse,
-  }
+  },
 }

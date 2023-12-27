@@ -53,6 +53,7 @@ export class TaskManagerService implements ITaskManagerService {
   }
 
   public async accomplish(taskId: number): Promise<void> {
+    this.logger.log(`Accomplishing task: ${taskId}`);
     await this.board.count(this.auth.getCurrentUserId());
     await this.tasks.delete(taskId);
   }

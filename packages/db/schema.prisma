@@ -157,9 +157,11 @@ model Repository {
 }
 
 model Dependencies {
-  id Int @id
+  id Int @id @default(autoincrement())
+
   repoId Int
-  name         String
+  name   String
+
   @@unique([repoId, name])
 }
 
