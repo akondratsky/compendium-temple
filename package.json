@@ -1,6 +1,6 @@
 {
   "name": "templates-compendium",
-  "version": "0.0.0-1",
+  "version": "3.3.3",
   "license": "MIT",
   "scripts": {
     "db:start": "docker-compose --env-file=.env -f packages/db/docker-compose.yaml up -d",
