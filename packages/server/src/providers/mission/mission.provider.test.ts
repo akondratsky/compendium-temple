@@ -8,7 +8,6 @@ describe('MissionProvider', () => {
   let db: DbClient;
 
   const globalMissionStateStub: MissionState = {
-    apiVersion: '1.0.0-test',
     id: 1,
     nextListTaskRepoId: 13,
   };

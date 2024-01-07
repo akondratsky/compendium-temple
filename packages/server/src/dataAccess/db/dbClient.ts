@@ -13,7 +13,6 @@ export class DbClient extends PrismaClient implements OnModuleInit {
         console.warn('No global mission state found. Creating...');
         await this.missionState.create({
           data: {
-            apiVersion: '0.0.1',
             nextListTaskRepoId: 0,
           },
         });

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "noEmit": true,
-    "target": "ES2019"
+    "target": "ES2019",
+    "resolveJsonModule": true
   },
   "files": [],
   "include": [],

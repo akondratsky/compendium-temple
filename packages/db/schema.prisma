@@ -54,9 +54,6 @@ model Task {
 model MissionState {
   id Int @id @default(1)
 
-  /// current worker/server API version for cases when API should be updated
-  apiVersion String
-
   /// ID since which list repos request should be done
   nextListTaskRepoId Int
 }
