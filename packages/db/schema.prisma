@@ -158,7 +158,8 @@ model Repository {
 }
 
 model Dependencies {
-  id Int @id @default(autoincrement())
+  id           Int @id @default(autoincrement())
+  sourceUserId Int
 
   repoId Int
   name   String

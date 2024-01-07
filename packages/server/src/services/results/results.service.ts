@@ -7,6 +7,7 @@ import { TaskType } from '@prisma/client';
 import { TaskManagerService } from '../taskManager';
 import { DetailRepoResultService } from '../detailsRepoResult';
 import { DependenciesProvider } from '../../providers/dependencies';
+import { AuthService } from '../auth';
 
 export interface IResultsService {
   saveResult<T extends TaskType>(result: Result<T>): Promise<void>;
@@ -18,6 +19,7 @@ export class ResultsService implements IResultsService {
     private readonly detailRepoResult: DetailRepoResultService,
     private readonly taskManager: TaskManagerService,
     private readonly dependencies: DependenciesProvider,
+    private readonly auth: AuthService,
   ) {}
 
   public async saveResult<T extends TaskType>({ taskId, taskType, data }: Result<T>): Promise<void> {
@@ -36,7 +38,8 @@ export class ResultsService implements IResultsService {
         break;
       }
       case TaskType.GET_DEPS: {
-        this.dependencies.save(taskId, data as string[])
+        const sourceUserId = this.auth.getCurrentUserId();
+        this.dependencies.save(taskId, data as string[], sourceUserId)
         break;
       }
       default:
