@@ -6,7 +6,7 @@ import { GitHubUser } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { GithubUserProvider } from '../../providers/githubUser';
 import { CompendiumUserProvider } from '../../providers/compendiumUser';
-import { HashUtil } from '../hash';
+import { HashUtil } from '../../utils/hash';
 import { OctokitClient } from '../../dataAccess/octokit';
 
 describe('AuthService', () => {

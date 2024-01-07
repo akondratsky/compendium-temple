@@ -1,4 +1,4 @@
-import { MissionState, TaskType } from '@prisma/client';
+import { MissionState } from '@prisma/client';
 import { MissionProvider } from './mission.provider';
 import { DbClient } from '../../dataAccess/db';
 

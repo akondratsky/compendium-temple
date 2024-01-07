@@ -8,11 +8,13 @@ import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common
 import { CodeOfConduct, GitHubUser, GithubUserType, License, Repository } from '@prisma/client';
 
 export interface IMapperUtil {
-  ownerToGithubUser(owner: SimpleUser): GitHubUser;
-  codeOfConduct(codeOfConduct: CodeOfConductResponse): CodeOfConduct;
   userType(userType: string): GithubUserType;
-  license(license: MinimalRepository['license']): License | null;
-  repository(repo: MinimalRepository): Repository;
+  
+  ownerToGithubUser(owner: SimpleUser, sourceUserId: number): GitHubUser;
+  license(license: MinimalRepository['license'], sourceUserId: number): License | null;
+  codeOfConduct(codeOfConduct: CodeOfConductResponse, sourceUserId: number): CodeOfConduct;
+  repository(repo: MinimalRepository, sourceUserId: number): Repository;
+  
   nullableDate(date?: string | number): Date | null;
 }
 
@@ -28,9 +30,10 @@ export class MapperUtil implements IMapperUtil {
     return status ? status === 'enabled' : null;
   }
 
-  public ownerToGithubUser(owner: SimpleUser): GitHubUser {
+  public ownerToGithubUser(owner: SimpleUser, sourceUserId: number): GitHubUser {
     return {
       id: owner.id,
+      sourceUserId,
       login: owner.login,
       name: owner.name ?? null,
       avatarUrl: owner.avatar_url,
@@ -45,9 +48,10 @@ export class MapperUtil implements IMapperUtil {
     };
   }
 
-  public license(license: LicenseResponse): License {
+  public license(license: LicenseResponse, sourceUserId: number): License {
     return {
       key: license.key,
+      sourceUserId,
       nodeId: license.node_id,
       name: license.name ?? null,
       url: license.url ?? null,
@@ -55,9 +59,10 @@ export class MapperUtil implements IMapperUtil {
     };
   }
 
-  public codeOfConduct(codeOfConduct: CodeOfConductResponse): CodeOfConduct {
+  public codeOfConduct(codeOfConduct: CodeOfConductResponse, sourceUserId: number): CodeOfConduct {
     return {
       key: codeOfConduct.key,
+      sourceUserId,
       name: codeOfConduct.name,
       url: codeOfConduct.url,
       body: codeOfConduct.body || null,
@@ -79,9 +84,10 @@ export class MapperUtil implements IMapperUtil {
     }
   }
 
-  public repository(repo: MinimalRepository): Repository {
+  public repository(repo: MinimalRepository, sourceUserId: number): Repository {
     return {
       id: repo.id,
+      sourceUserId,
       nodeId: repo.node_id,
       name: repo.name,
       codeOfConductKey: repo.code_of_conduct?.key || null,

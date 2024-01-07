@@ -2,7 +2,7 @@ import {
   MinimalRepository,
   Result,
 } from '@compendium-temple/api';
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { TaskType } from '@prisma/client';
 import { TaskManagerService } from '../taskManager';
 import { DetailRepoResultService } from '../detailsRepoResult';

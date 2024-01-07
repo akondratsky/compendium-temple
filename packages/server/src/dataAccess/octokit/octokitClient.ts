@@ -25,6 +25,7 @@ export class OctokitClient implements IOctokitClient {
       const { data } = await octokit.users.getAuthenticated();
 
       return {
+        sourceUserId: data.id,
         avatarUrl: data.avatar_url,
         email: data.email,
         gravatarId: data.gravatar_id,

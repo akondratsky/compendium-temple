@@ -102,9 +102,10 @@ enum GithubUserType {
 
 model Repository {
   id            Int     @id
+  sourceUserId  Int /// id of the user who created the repo
   nodeId        String
   name          String /// @example Hello-World
-  fullName      String // octocat/Hello-World
+  fullName      String /// octocat/Hello-World
   description   String?
   defaultBranch String?
   language      String?
@@ -166,11 +167,12 @@ model Dependencies {
 }
 
 model GitHubUser {
-  id     Int            @id
-  name   String?
-  login  String
-  nodeId String
-  type   GithubUserType
+  id           Int            @id
+  sourceUserId Int
+  name         String?
+  login        String
+  nodeId       String
+  type         GithubUserType
 
   email      String?
   gravatarId String?
@@ -185,19 +187,21 @@ model GitHubUser {
 }
 
 model License {
-  key        String       @id
-  nodeId     String?
-  name       String?
-  spdxId     String?
-  url        String?
-  Repository Repository[]
+  key          String       @id
+  sourceUserId Int
+  nodeId       String?
+  name         String?
+  spdxId       String?
+  url          String?
+  Repository   Repository[]
 }
 
 model CodeOfConduct {
-  key        String       @id
-  name       String
-  url        String
-  htmlUrl    String?
-  body       String?
-  Repository Repository[]
+  key          String       @id
+  sourceUserId Int
+  name         String
+  url          String
+  htmlUrl      String?
+  body         String?
+  Repository   Repository[]
 }
