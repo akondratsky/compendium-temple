@@ -2,7 +2,7 @@ import {
   MinimalRepository,
   Result,
 } from '@compendium-temple/api';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { TaskType } from '@prisma/client';
 import { TaskManagerService } from '../taskManager';
 import { DetailRepoResultService } from '../detailsRepoResult';
@@ -21,6 +21,8 @@ export class ResultsService implements IResultsService {
     private readonly dependencies: DependenciesProvider,
     private readonly auth: AuthService,
   ) {}
+
+  private readonly logger = new Logger(ResultsService.name);
 
   public async saveResult<T extends TaskType>({ taskId, taskType, data }: Result<T>): Promise<void> {
     switch (taskType) {
@@ -49,9 +51,16 @@ export class ResultsService implements IResultsService {
   }
 
   private shouldBeInvestigated(repo: MinimalRepository): boolean {
-    return !!repo.is_template
+    const shouldBeInvestigated = !!repo.is_template
       && repo.visibility === 'public'
       && !repo.disabled
       && (repo.language === 'TypeScript' || repo.language === 'JavaScript');
+
+    this.logger.log(shouldBeInvestigated
+      ? `Public template found: ${repo.full_name}`
+      : `Repo ${repo.full_name} does not satisfy the requirements.`
+    );
+
+    return shouldBeInvestigated;
   }
 }

@@ -18,6 +18,6 @@ export class Cli {
 
     await this.updater.ensureLatestVersions(dev);
     const { start } = await import('@compendium-temple/worker');
-    start();
+    await start();
   }
 }

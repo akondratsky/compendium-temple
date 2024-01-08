@@ -1,7 +1,7 @@
-import { inject, injectable } from 'tsyringe';
+import { delay, inject, injectable } from 'tsyringe';
 import { CompendiumService, ICompendiumService } from '../compendium';
-import { TaskType } from '@prisma/client';
-import { RateLimit, Result, ResultDataTypeMap, SpdxSbom, TaskWithPayload } from '@compendium-temple/api';
+import type { TaskType } from '@prisma/client';
+import { RateLimit, ResultDataTypeMap, SpdxSbom, TaskWithPayload } from '@compendium-temple/api';
 import { GithubService, IGithubService } from '../github';
 import { ConfigService, IConfigService } from '../config';
 import { ITimeService, TimeService } from '../time';
@@ -13,10 +13,10 @@ export interface ITaskRunnerService {
 @injectable()
 export class TaskRunnerService implements ITaskRunnerService {
   constructor(
-    @inject(CompendiumService) private readonly compendium: ICompendiumService,
-    @inject(GithubService) private readonly github: IGithubService,
     @inject(ConfigService) private readonly config: IConfigService,
     @inject(TimeService) private readonly time: ITimeService,
+    @inject(delay(() => CompendiumService)) private readonly compendium: ICompendiumService,
+    @inject(delay(() => GithubService)) private readonly github: IGithubService,
   ) { }
 
   private isRunning = true;
@@ -42,7 +42,7 @@ export class TaskRunnerService implements ITaskRunnerService {
   private async performTask<T extends TaskType>(): Promise<RateLimit> {
     const task = await this.compendium.getTask<T>();
     switch (task.type) {
-      case TaskType.LIST_REPOS: {
+      case 'LIST_REPOS': {
         const { since } = task as TaskWithPayload<typeof TaskType.LIST_REPOS>;
         const { data, rateLimit } = await this.github.listRepos(since);
         await this.compendium.sendResult<typeof TaskType.LIST_REPOS>({
@@ -52,7 +52,7 @@ export class TaskRunnerService implements ITaskRunnerService {
         });
         return rateLimit;
       }
-      case TaskType.DETAIL_REPO: {
+      case 'DETAIL_REPO': {
         const { owner, repo } = task as TaskWithPayload<typeof TaskType.DETAIL_REPO>;
         const { data, rateLimit } = await this.github.getRepo(owner, repo);
         await this.compendium.sendResult<typeof TaskType.DETAIL_REPO>({
@@ -62,7 +62,7 @@ export class TaskRunnerService implements ITaskRunnerService {
         });
         return rateLimit;
       }
-      case TaskType.GET_DEPS: {
+      case 'GET_DEPS': {
         const { owner, repo } = task as TaskWithPayload<typeof TaskType.GET_DEPS>;
         const { data, rateLimit } = await this.github.getSpdxSbom(owner, repo);
         await this.compendium.sendResult<typeof TaskType.GET_DEPS>({

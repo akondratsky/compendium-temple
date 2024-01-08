@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import yargs from 'yargs';
 import registryUrl from 'registry-url';
 import { resolve } from 'path';
@@ -9,6 +9,7 @@ import { existsSync, readFileSync } from 'fs';
 export interface IConfigService {
   init(): void;
 
+  isDev: boolean;
   registryUrl: string;
   apiUrl: string;
   remainingLimit: number;
@@ -18,10 +19,11 @@ type CompendiumConfiguration = {
   rateLimit: number;
 };
 
-@injectable()
+@singleton()
 export class ConfigService implements IConfigService {
   public registryUrl = registryUrl('@compendium');
   public apiUrl = '';
+  public isDev = false;
   public remainingLimit = 500;
 
   private readonly configFilePath = resolve(userInfo().homedir, '.compendium.config.json');
@@ -39,6 +41,7 @@ export class ConfigService implements IConfigService {
       .parseSync();
 
     if (dev) {
+      this.isDev = true;
       this.apiUrl = 'http://localhost:3000/api';
       this.registryUrl = 'http://localhost:4873';
     }

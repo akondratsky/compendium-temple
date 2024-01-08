@@ -1,0 +1,27 @@
+shape: sequence_diagram
+
+Main
+ConfigService
+AuthService
+TaskRunnerService
+
+Main -> ConfigService
+Main -> AuthService
+Main -> TaskRunnerService
+
+AuthService -> LoggerService
+AuthService -> UiService
+
+TaskRunnerService -> ConfigService
+TaskRunnerService -> CompendiumService
+TaskRunnerService -> GithubService
+TaskRunnerService -> TimeService
+TaskRunnerService."done"
+
+CompendiumService -> HttpService
+CompendiumService -> LoggerService
+
+HttpService -> ConfigService
+HttpService -> AuthService
+
+LoggerService."done"

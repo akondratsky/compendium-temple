@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "strict": true,
+    "resolveJsonModule": true,
     "paths": {
       "@compendium-temple/api": ["packages/api/src/index.ts"],
       "@compendium-temple/cli": ["packages/cli/src/index.ts"],
