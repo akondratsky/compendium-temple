@@ -15,6 +15,7 @@ compendium
 - workers requests a new task from the server
 - worker accomplishes task by making request to GitHub API with user's token
 - worker returns response to the server
+- server saves data
 
 ## Development
 

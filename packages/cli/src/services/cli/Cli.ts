@@ -14,6 +14,8 @@ export class Cli {
       .option('dev', { type: 'boolean', default: false })
       .hide('dev')
       .help(false)
+      .strict()
+      .version(false)
       .parseSync();
 
     await this.updater.ensureLatestVersions(dev);

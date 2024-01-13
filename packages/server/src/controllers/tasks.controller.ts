@@ -1,4 +1,4 @@
-import { Controller, InternalServerErrorException, Logger, Post, UseGuards } from '@nestjs/common';
+import { Controller, Logger, Post, UseGuards } from '@nestjs/common';
 import { TaskManagerService } from '../services/taskManager';
 import { AuthGuard } from '../auth.guard';
 
@@ -13,7 +13,6 @@ export class TasksController {
 
   @Post()
   async createTask() {
-    throw new InternalServerErrorException();
     this.logger.log('POST /task')
     return this.tasksService.getAvailableOrCreateTask();
   }
