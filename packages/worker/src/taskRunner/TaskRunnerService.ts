@@ -1,4 +1,5 @@
 import { delay, inject, injectable } from 'tsyringe';
+import ora from 'ora';
 import { CompendiumService, ICompendiumService } from '../compendium';
 import type { TaskType } from '@prisma/client';
 import { RateLimit, ResultDataTypeMap, SpdxSbom, TaskWithPayload } from '@compendium-temple/api';
@@ -20,10 +21,13 @@ export class TaskRunnerService implements ITaskRunnerService {
   ) { }
 
   private isRunning = true;
+  private spinner = ora('Running tasks');;
 
   public async run() {
+    this.spinner.start();
     while (this.isRunning) {
       const rateLimit = await this.runSession();
+      this.spinner.text = 'Waiting for rate limit reset...';
       await this.time.waitUntil(rateLimit.reset);
     }
   }
@@ -41,6 +45,7 @@ export class TaskRunnerService implements ITaskRunnerService {
 
   private async performTask<T extends TaskType>(): Promise<RateLimit> {
     const task = await this.compendium.getTask<T>();
+    this.spinner.text = `Performing task #${task.id}...`;
     switch (task.type) {
       case 'LIST_REPOS': {
         const { since } = task as TaskWithPayload<typeof TaskType.LIST_REPOS>;
