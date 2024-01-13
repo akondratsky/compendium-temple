@@ -1,5 +1,21 @@
 # Compendium Temple
 
+## Usage
+
+```sh
+npm i -g @compendium-temple/cli
+compendium
+```
+
+## How it works
+
+- CLI checks the latest worker version and automatically updates it
+- CLI runs worker
+- worker authorizes using github to be able to make requests to public repositories
+- workers requests a new task from the server
+- worker accomplishes task by making request to GitHub API with user's token
+- worker returns response to the server
+
 ## Development
 
 ### How to start
@@ -59,3 +75,6 @@ Folder: `packages/server`.
 - `nx build server`
 - `nx lint server`
 - `nx test server [--watch]` - run unit tests, with `--watch` in the watch mode
+
+## Flow
+

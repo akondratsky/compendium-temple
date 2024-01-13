@@ -18,7 +18,6 @@ export const resetDatabase = async () => {
   await db.missionState.create({
     data: {
       id: 1,
-      apiVersion: '1.0.0',
       nextListTaskRepoId: 0,
     },
   });

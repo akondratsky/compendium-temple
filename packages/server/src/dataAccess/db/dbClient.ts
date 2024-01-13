@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 /**
@@ -6,11 +6,13 @@ import { PrismaClient } from '@prisma/client';
  */
 @Injectable()
 export class DbClient extends PrismaClient implements OnModuleInit {
+  private readonly logger = new Logger(DbClient.name);
+
   public async onModuleInit() {
       await this.$connect();
 
       if (await this.missionState.findFirst() === null) {
-        console.warn('No global mission state found. Creating...');
+        this.logger.warn('No global mission state found. Creating...');
         await this.missionState.create({
           data: {
             nextListTaskRepoId: 0,

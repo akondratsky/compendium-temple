@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { upperCase } from 'lodash';
 import { AuthService, IAuthService } from '../auth';
 import { ConfigService, IConfigService } from '../config';
@@ -29,11 +29,13 @@ export class HttpService implements IHttpService {
     });
     this.httpClient.interceptors.response.use(
       (value) => value,
-      (error) => {
-        const method = upperCase(error.config.method);
-        const url = `${error.config.baseURL}${error.config.url}`;
-        const status = error.response.status;
-        this.logger.error(`${method} ${url} request failed with status ${status}`);
+      (error: AxiosError) => {
+        const method = upperCase(error.config?.method);
+        const url = `${error.config?.baseURL}${error.config?.url}`;
+        const status = error.response?.status;
+        this.logger.error(
+          `${error.code}: ${method} ${url} failed ${ status ? `with status ${status}` : '' }`
+        );
         this.logger.info('Please try to restart the client.');
         process.exit();
       }

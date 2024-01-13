@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "db:start": "docker-compose --env-file=.env -f packages/db/docker-compose.yaml up -d",
-    "db:reset": "prisma migrate reset --schema=packages/db/schema.prisma",
+    "db:reset": "prisma migrate reset --schema=packages/db/schema.prisma && npm run db:push",
     "db:push": "prisma db push  --schema=packages/db/schema.prisma",
     "db:migrate": "prisma migrate dev --schema=packages/db/schema.prisma",
     "db:client": "npm run db:client:format && npm run db:client:generate",
