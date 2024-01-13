@@ -16,8 +16,20 @@
         "tsConfig": "packages/worker/tsconfig.lib.json",
         "assets": [
         ]
-      }
+      },
+      "dependsOn": [
+        "^build"
+      ]
     },
+    "publish": {
+      "command": "ts-node tools/publish.ts worker {args.ver} {args.tag}",
+      "dependsOn": [
+        "build"
+      ]
+    },
+
+
+
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": [
@@ -29,18 +41,6 @@
         ]
       }
     },
-    "publish": {
-      "command": "ts-node tools/publish.ts cli {args.ver} {args.tag}",
-      "dependsOn": [
-        "build"
-      ]
-    },
-    "publish-local": {
-      "command": "ts-node tools/publish-local.ts worker",
-      "dependsOn": [
-        "build"
-      ]
-    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": [
@@ -48,14 +48,42 @@
       ],
       "options": {
         "jestConfig": "packages/worker/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "passWithNoTests": true,
+        "codeCoverage": true
       }
+    },
+
+
+
+    "bump-beta": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node tools/bump-beta-version.ts worker"
+      }
+    },
+    "build-dev": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "outputPath": "dist/packages/worker",
+        "main": "packages/worker/src/index.ts",
+        "tsConfig": "packages/worker/tsconfig.lib.json",
+        "assets": [
+        ]
+      },
+      "dependsOn": [
+        "bump-beta",
+        "^publish-local"
+      ]
+    },
+    "publish-local": {
+      "command": "ts-node tools/publish-local.ts worker",
+      "dependsOn": [
+        "build-dev"
+      ]
     }
   },
   "tags": []

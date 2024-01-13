@@ -1,17 +1,4 @@
-import { program } from 'commander';
-export * from './AbstractWorker';
+import { container } from 'tsyringe';
+import { Main } from './Main';
 
-type CliOptions = {
-  registry?: string;
-}
-
-export const start = async () => {
-  program
-    .option('-r, --registry <string>', 'registry URL', undefined)
-    .action((params: CliOptions) => {
-      console.log('not implemented yet', params);
-    })
-    .parse();
-};
-
-export default start;
+export const start = () => container.resolve(Main).start();

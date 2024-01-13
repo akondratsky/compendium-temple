@@ -1,19 +1,11 @@
-import fs from 'fs';
-import { execSync } from 'child_process';
-import { validateOrExit } from './validateOrExit';
-import { PackageJson } from 'nx/src/utils/package-json';
-import { updateBetaVersion } from './updateBetaVersion';
+import { execSync } from 'node:child_process';
+import { getPackageJson } from './getPackageJson';
 
+/**
+ * Publishes package from current working directory
+ */
 export const publishLocallyFromCwd = async () => {
-  validateOrExit(
-    fs.existsSync('package.json'),
-    'Could not find package.json',
-  );
-  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf-8')) as PackageJson;
-
-  packageJson.version = await updateBetaVersion(packageJson);
-
-  fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2), 'utf-8');
+  const packageJson = await getPackageJson();
 
   try {
     execSync(`npm publish --registry=http://localhost:4873/`);

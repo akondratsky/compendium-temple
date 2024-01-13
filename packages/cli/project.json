@@ -41,7 +41,8 @@
           "extractLicenses": true,
           "vendorChunk": false
         }
-      }
+      },
+      "dependsOn": ["^build"]
     },
     "publish": {
       "command": "ts-node tools/publish.ts cli {args.ver} {args.tag}",
@@ -49,12 +50,9 @@
         "build"
       ]
     },
-    "publish-local": {
-      "command": "ts-node tools/publish-local.ts cli --global --autoInstall",
-      "dependsOn": [
-        "build"
-      ]
-    },
+
+
+    
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": [
@@ -81,6 +79,62 @@
           "codeCoverage": true
         }
       }
+    },
+
+    "bump-beta": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node tools/bump-beta-version.ts cli"
+      }
+    },
+    "build-dev": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "main": "packages/cli/src/index.ts",
+        "outputPath": "dist/packages/cli",
+        "compiler": "tsc",
+        "format": ["cjs"],
+        "tsConfig": "packages/cli/tsconfig.lib.json",
+        "project": "packages/cli/package.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "rollupConfig": "packages/cli/rollup.config.js",
+        "assets": [
+          {
+            "glob": "packages/cli/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/cli/bin/compendium.js",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "sourceMap": false,
+          "declaration": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      },
+      "dependsOn": [
+        "bump-beta",
+        "^publish-local"
+      ]
+    },
+    "publish-local": {
+      "command": "ts-node tools/publish-local.ts cli --global --autoInstall",
+      "dependsOn": [
+        "build-dev"
+      ]
     }
   },
   "tags": []

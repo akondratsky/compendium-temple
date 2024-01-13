@@ -1,13 +1,13 @@
 {
-  "name": "templates-compendium",
+  "name": "compendium-temple",
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "targets": {
-    "local-registry": {
+    "verdaccio": {
       "executor": "@nx/js:verdaccio",
       "options": {
         "port": 4873,
         "config": ".verdaccio/config.yml",
-        "storage": "tmp/local-registry/storage"
+        "storage": ".verdaccio/storage"
       }
     }
   }

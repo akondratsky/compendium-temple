@@ -19,7 +19,9 @@
           "error",
           {
             "enforceBuildableLibDependency": true,
-            "allow": [],
+            "allow": [
+              "@compendium-temple/api"
+            ],
             "allowCircularSelfDependency": true,
             "depConstraints": [
               {

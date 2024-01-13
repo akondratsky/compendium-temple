@@ -5,7 +5,8 @@
     "outDir": "../../dist/packages/cli",
     "declaration": false,
     "sourceMap": false,
-    "types": ["node", "reflect-metadata"],
+    "types": ["node"],
+    "esModuleInterop": true,
     "noEmit": false
   },
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],

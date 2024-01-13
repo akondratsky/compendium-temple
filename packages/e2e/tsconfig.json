@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "types": ["jest", "node"]
+  },
+  "references": [
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}

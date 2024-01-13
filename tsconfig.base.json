@@ -10,24 +10,20 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "strict": true,
+    "resolveJsonModule": true,
     "paths": {
-      "@compendium/cli": [
-        "packages/cli/src/index.ts"
-      ],
-      "@compendium/worker": [
-        "packages/worker/src/index.ts"
-      ]
-    }
+      "@compendium-temple/api": ["packages/api/src/index.ts"],
+      "@compendium-temple/cli": ["packages/cli/src/index.ts"],
+      "@compendium-temple/config": ["packages/config/src/index.ts"],
+      "@compendium-temple/worker": ["packages/worker/src/index.ts"],
+      "@compendium-temple/spdx": ["packages/spdx/src/index.ts"]
+    },
+    "typeRoots": ["node_modules/@types", "./env.d.ts"]
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules"]
 }

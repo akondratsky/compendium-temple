@@ -1,0 +1,61 @@
+{
+  "name": "api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/api/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/api",
+        "main": "packages/api/src/index.ts",
+        "tsConfig": "packages/api/tsconfig.lib.json",
+        "assets": ["packages/api/*.md"]
+      }
+    },
+    "publish": {
+      "command": "ts-node tools/publish.ts api {args.ver} {args.tag}",
+      "dependsOn": [
+        "build"
+      ]
+    },
+
+
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/api/**/*.ts"]
+      }
+    },
+
+
+    "bump-beta": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node tools/bump-beta-version.ts api"
+      }
+    },
+    "build-dev": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/api",
+        "main": "packages/api/src/index.ts",
+        "tsConfig": "packages/api/tsconfig.lib.json",
+        "assets": ["packages/api/*.md"]
+      },
+      "dependsOn": [
+        "bump-beta"
+      ]
+    },
+    "publish-local": {
+      "command": "ts-node tools/publish-local.ts api",
+      "dependsOn": [
+        "build-dev"
+      ]
+    }
+  },
+  "tags": []
+}

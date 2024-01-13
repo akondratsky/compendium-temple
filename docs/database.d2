@@ -1,0 +1,38 @@
+CompendiumUser {
+  shape: sql_table
+  id: int { constraint: primary_key }
+  login: string
+  hash: string
+}
+
+MissionState {
+  id: 1
+  shape: sql_table
+  nextListTaskRepoId: number
+  nextDepsTaskRepoId: number
+}
+
+Task {
+  shape: sql_table
+  id: int { constraint: primary_key }
+  compendiumUserId: int
+  type: LIST_REPOS | GET_DEPS
+  requestTime: DateTime
+  isDone: boolean
+}
+
+ListReposPayload {
+  shape: sql_table
+  taskId: int { constraint: primary_key }
+  since: int
+}
+
+GetDepsPayload {
+  shape: sql_table
+  taskId: int { constraint: primary_key }
+  repoId: int
+}
+
+Task -> ListReposPayload
+Task -> GetDepsPayload
+Task -> CompendiumUser

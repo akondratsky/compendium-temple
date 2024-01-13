@@ -1,0 +1,205 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_CONNECTION_STRING")
+}
+
+/// A Compendium Temple citizen running the worker
+model CompendiumUser {
+  /// User ID, same as GitHub user ID
+  id    Int     @id
+  /// GitHub user's login
+  login String
+  /// GitHub token hash to authorize users
+  hash  String?
+  /// Tasks assigned to the user
+  Task  Task[]
+}
+
+model Board {
+  // compendium/github user id
+  userId Int @id
+  // number of accomplished tasks
+  count  Int
+}
+
+enum TaskType {
+  LIST_REPOS
+  DETAIL_REPO
+  GET_DEPS
+}
+
+model Task {
+  /// Task ID
+  id Int @id @default(autoincrement())
+
+  /// Compendium user ID
+  compendiumUserId Int?
+  compendiumUser   CompendiumUser? @relation(fields: [compendiumUserId], references: [id])
+
+  /// Type of task, LIST_REPOS or GET_DEPS
+  type TaskType
+
+  /// When this task was list time requested
+  requestTime DateTime? @default(now())
+
+  listReposPayload  ListReposPayload[]
+  detailRepoPayload DetailRepoPayload[]
+  getDepsPayload    GetDepsPayload[]
+}
+
+model MissionState {
+  id Int @id @default(1)
+
+  /// ID since which list repos request should be done
+  nextListTaskRepoId Int
+}
+
+/// Payload for list repos task
+model ListReposPayload {
+  /// Task ID this payload belongs to
+  taskId Int  @id
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  /// Repo ID, from which repos will be returned
+  since Int
+}
+
+/// Payload for get dependencies task
+model DetailRepoPayload {
+  /// Task ID this payload belongs to
+  taskId Int    @id
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  /// owner login
+  owner  String
+  /// repo name
+  repo   String
+}
+
+/// Payload for get dependencies task
+model GetDepsPayload {
+  /// Task ID this payload belongs to
+  taskId Int  @id
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  /// owner login
+  owner String
+  /// repo name
+  repo  String
+}
+
+enum GithubUserType {
+  USER
+  ORGANIZATION
+  BOT
+}
+
+model Repository {
+  id            Int     @id
+  sourceUserId  Int /// id of the user who created the repo
+  nodeId        String
+  name          String /// @example Hello-World
+  fullName      String /// octocat/Hello-World
+  description   String?
+  defaultBranch String?
+  language      String?
+  size          Int?
+
+  // urls
+  homepage String?
+  htmlUrl  String /// @example "https://github.com/octocat/Hello-World"
+  url      String /// @example "https://api.github.com/repos/octocat/Hello-World"
+  gitUrl   String?
+
+  // counts
+  forksCount       Int?
+  stargazersCount  Int?
+  watchersCount    Int?
+  openIssuesCount  Int?
+  subscribersCount Int?
+
+  // flags
+  isTemplate                             Boolean?
+  isDisabled                             Boolean?
+  isFork                                 Boolean
+  hasIssues                              Boolean?
+  hasProjects                            Boolean?
+  hasWiki                                Boolean?
+  hasPages                               Boolean?
+  hasDownloads                           Boolean?
+  hasDiscussions                         Boolean?
+  isArchived                             Boolean?
+  isForkingAllowed                       Boolean?
+  // security_and_analysis
+  isAdvancedSecurityEnabled              Boolean?
+  isDependabotSecurityUpdatesEnabled     Boolean?
+  isSecretsScanningEnabled               Boolean?
+  isSecretsScanningPushProtectionEnabled Boolean?
+
+  /// owner
+  gitHubUserId Int
+  owner        GitHubUser @relation(fields: [gitHubUserId], references: [id])
+
+  codeOfConductKey String?
+  codeOfConduct    CodeOfConduct? @relation(fields: [codeOfConductKey], references: [key])
+
+  license    License? @relation(fields: [licenseKey], references: [key])
+  licenseKey String?
+
+  pushedAt  DateTime?
+  createdAt DateTime?
+  updatedAt DateTime?
+}
+
+model Dependencies {
+  id           Int @id @default(autoincrement())
+  sourceUserId Int
+
+  repoId Int
+  name   String
+
+  @@unique([repoId, name])
+}
+
+model GitHubUser {
+  id           Int            @id
+  sourceUserId Int
+  name         String?
+  login        String
+  nodeId       String
+  type         GithubUserType
+
+  email      String?
+  gravatarId String?
+
+  avatarUrl String // URI
+  url       String
+  htmlUrl   String
+
+  siteAdmin  Boolean
+  starredAt  DateTime?
+  Repository Repository[]
+}
+
+model License {
+  key          String       @id
+  sourceUserId Int
+  nodeId       String?
+  name         String?
+  spdxId       String?
+  url          String?
+  Repository   Repository[]
+}
+
+model CodeOfConduct {
+  key          String       @id
+  sourceUserId Int
+  name         String
+  url          String
+  htmlUrl      String?
+  body         String?
+  Repository   Repository[]
+}
