@@ -5,7 +5,6 @@ name: Review Pull Request
 
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN}}
-  HELLO_WORLD: ${{ secrets.SUPER_SECRET }}
 
 jobs:
   review:
@@ -47,6 +46,3 @@ jobs:
         with:
           targets: test
           projects: server,cli,worker
-
-      - name: Extra echo
-        run: echo $HELLO_WORLD ${{ secrets.SUPER_SECRET }}
