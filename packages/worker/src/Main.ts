@@ -18,7 +18,7 @@ export class Main {
    * Runs everything
    */
   public async start() {
-    this.config.init();
+    await this.config.init();
     await this.auth.authorize();
     await this.taskRunner.run();
   }

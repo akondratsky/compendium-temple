@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
 import yargs from 'yargs';
 import registryUrl from 'registry-url';
+import { prompt } from 'enquirer';
 import { resolve } from 'path';
 import { userInfo } from 'os';
-import { existsSync, readFileSync } from 'fs';
-
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 
 export interface IConfigService {
-  init(): void;
+  init(): Promise<void>;
 
   isDev: boolean;
   registryUrl: string;
@@ -16,7 +16,7 @@ export interface IConfigService {
 }
 
 type CompendiumConfiguration = {
-  rateLimit: number;
+  remainingLimit: number;
 };
 
 @singleton()
@@ -28,7 +28,7 @@ export class ConfigService implements IConfigService {
 
   private readonly configFilePath = resolve(userInfo().homedir, '.compendium.config.json');
 
-  public init() {
+  public async init(): Promise<void> {
     const { config, dev } = yargs(process.argv.slice(2))
       .options({
         config: { type: 'boolean', default: false, description: 'Setup configuration' },
@@ -46,10 +46,14 @@ export class ConfigService implements IConfigService {
       this.registryUrl = 'http://localhost:4873';
     }
 
+    const fileConfiguration = this.readConfigFile();
+
     if (config) {
-      // TODO: implement config setup
+      const promptResult = await this.promptConfiguration(fileConfiguration);
+      this.writeConfigFile(promptResult);
+      this.remainingLimit = promptResult.remainingLimit;
     } else {
-      this.readConfigFile();
+      this.remainingLimit = fileConfiguration.remainingLimit;
     }
   }
 
@@ -57,9 +61,32 @@ export class ConfigService implements IConfigService {
     try {
       return existsSync(this.configFilePath)
         ? JSON.parse(readFileSync(this.configFilePath, 'utf-8'))
-        : {} as CompendiumConfiguration;
+        : { remainingLimit: 500 } as CompendiumConfiguration;
     } catch (e) {
-      throw new Error('Error reading configuration file')
+      throw new Error('Error reading configuration file');
     }
+  }
+
+  private writeConfigFile(config: CompendiumConfiguration) {
+    try {
+      writeFileSync(this.configFilePath, JSON.stringify(config, null, 2));
+    } catch (e) {
+      throw new Error('Error writing configuration file');
+    }
+  }
+
+  private async promptConfiguration(defaults: CompendiumConfiguration): Promise<CompendiumConfiguration> {
+    const limitChoices = [100, 500, 1000, 2000, 3000, 4000];
+    const answer = await prompt<{ remainingLimit: string }>({
+      type: 'select',
+      name: 'remainingLimit',
+      initial: limitChoices.indexOf(defaults.remainingLimit),
+      message: 'Limit of requests per hour the worker should leave before pause',
+      choices: limitChoices.map(String),
+    });
+
+    return {
+      remainingLimit: Number(answer.remainingLimit),
+    };
   }
 }
