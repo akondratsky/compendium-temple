@@ -3,6 +3,9 @@ on:
 
 name: Review Pull Request
 
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN}}
+
 jobs:
   review:
     name: Review Pull Request Job
@@ -22,7 +25,20 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # library check
       - name: Install
         run: npm ci
+
+      - name: Lint
+        uses: mansagroup/nrwl-nx-action@v3
+        with:
+          targets: list
+
+
+      - name: Test
+        uses: mansagroup/nrwl-nx-action@v3
+        with:
+          targets: test
