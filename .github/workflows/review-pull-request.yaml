@@ -31,6 +31,9 @@ jobs:
       # library check
       - name: Install
         run: npm ci
+      
+      - name: Prisma
+        run: npm run db:client
 
       - name: Lint
         uses: mansagroup/nrwl-nx-action@v3
@@ -42,3 +45,4 @@ jobs:
         uses: mansagroup/nrwl-nx-action@v3
         with:
           targets: test
+          projects: server,cli,worker
