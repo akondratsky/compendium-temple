@@ -1,0 +1,28 @@
+on:
+  pull_request:  
+
+name: Review Pull Request
+
+jobs:
+  review:
+    name: Review Pull Request Job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup Kubectl
+        uses: tale/kubectl-action@v1
+        with:
+          base64-kube-config: ${{ secrets.KUBE_CONFIG_BASE64 }}
+          kubectl-version: v1.28.3
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # library check
+      - name: Install
+        run: npm ci
