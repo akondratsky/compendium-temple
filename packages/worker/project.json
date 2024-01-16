@@ -55,13 +55,13 @@
 
 
 
-    "bump-beta": {
+    "bump-local-beta": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "ts-node tools/bump-beta-version.ts worker"
+        "command": "ts-node tools/bump-local-beta-version.ts worker"
       }
     },
-    "build-dev": {
+    "build-local-beta": {
       "executor": "@nx/js:tsc",
       "outputs": [
         "{options.outputPath}"
@@ -75,14 +75,14 @@
         ]
       },
       "dependsOn": [
-        "bump-beta",
+        "bump-local-beta",
         "^publish-local"
       ]
     },
     "publish-local": {
       "command": "ts-node tools/publish-local.ts worker",
       "dependsOn": [
-        "build-dev"
+        "build-local-beta"
       ]
     }
   },

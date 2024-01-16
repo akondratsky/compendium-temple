@@ -81,13 +81,13 @@
       }
     },
 
-    "bump-beta": {
+    "bump-local-beta": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "ts-node tools/bump-beta-version.ts cli"
+        "command": "ts-node tools/bump-local-beta-version.ts cli"
       }
     },
-    "build-dev": {
+    "build-local-beta": {
       "executor": "@nx/rollup:rollup",
       "outputs": [
         "{options.outputPath}"
@@ -126,14 +126,14 @@
         }
       },
       "dependsOn": [
-        "bump-beta",
+        "bump-local-beta",
         "^publish-local"
       ]
     },
     "publish-local": {
       "command": "ts-node tools/publish-local.ts cli --global --autoInstall",
       "dependsOn": [
-        "build-dev"
+        "build-local-beta"
       ]
     }
   },
