@@ -45,7 +45,7 @@
       "dependsOn": ["^build"]
     },
     "publish": {
-      "command": "ts-node tools/publish.ts cli {args.ver} {args.tag}",
+      "command": "ts-node tools/publish.ts cli",
       "dependsOn": [
         "build"
       ]

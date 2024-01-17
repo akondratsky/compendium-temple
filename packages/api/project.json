@@ -15,7 +15,7 @@
       }
     },
     "publish": {
-      "command": "ts-node tools/publish.ts api {args.ver} {args.tag}",
+      "command": "ts-node tools/publish.ts api",
       "dependsOn": [
         "build"
       ]

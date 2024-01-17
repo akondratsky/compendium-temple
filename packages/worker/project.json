@@ -22,7 +22,7 @@
       ]
     },
     "publish": {
-      "command": "ts-node tools/publish.ts worker {args.ver} {args.tag}",
+      "command": "ts-node tools/publish.ts worker",
       "dependsOn": [
         "build"
       ]
