@@ -15,7 +15,7 @@
       }
     },
     "publish": {
-      "command": "ts-node tools/publish.ts api {args.ver} {args.tag}",
+      "command": "ts-node tools/publish.ts api",
       "dependsOn": [
         "build"
       ]
@@ -30,14 +30,14 @@
       }
     },
 
-
-    "bump-beta": {
+  
+    "bump-local-beta": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "ts-node tools/bump-beta-version.ts api"
+        "command": "ts-node tools/bump-local-beta-version.ts api"
       }
     },
-    "build-dev": {
+    "build-local-beta": {
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -47,13 +47,13 @@
         "assets": ["packages/api/*.md"]
       },
       "dependsOn": [
-        "bump-beta"
+        "bump-local-beta"
       ]
     },
     "publish-local": {
       "command": "ts-node tools/publish-local.ts api",
       "dependsOn": [
-        "build-dev"
+        "build-local-beta"
       ]
     }
   },

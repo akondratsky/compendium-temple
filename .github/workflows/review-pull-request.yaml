@@ -1,0 +1,52 @@
+on:
+  pull_request:  
+
+name: Review Pull Request
+
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN}}
+
+jobs:
+  review:
+    name: Review Pull Request Job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup Kubectl
+        uses: tale/kubectl-action@v1
+        with:
+          base64-kube-config: ${{ secrets.KUBE_CONFIG_BASE64 }}
+          kubectl-version: v1.28.3
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # library check
+      - name: Install
+        run: npm ci
+      
+      - name: Prisma
+        run: npm run db:client
+
+      - name: Lint
+        uses: mansagroup/nrwl-nx-action@v3
+        with:
+          targets: list
+
+      - name: Test
+        uses: mansagroup/nrwl-nx-action@v3
+        with:
+          targets: test
+          projects: server,cli,worker
+
+      - name: Build
+        uses: mansagroup/nrwl-nx-action@v3
+        with:
+          targets: build

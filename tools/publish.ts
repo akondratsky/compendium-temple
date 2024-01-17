@@ -1,49 +1,51 @@
-import { execSync } from 'child_process';
-import { readFileSync, writeFileSync } from 'fs';
-import chalk from 'chalk';
-
+import minimist, { ParsedArgs } from 'minimist';
 import devkit from '@nx/devkit';
+import { execSync } from 'child_process';
 import { validateOrExit } from './utils';
-const { readCachedProjectGraph } = devkit;
+import { getPackageJson } from './utils/getPackageJson';
 
-// Executing publish script: node path/to/publish.mjs {name} --version {version} --tag {tag}
-// Default "tag" to "next" so we won't publish the "latest" tag by accident.
-const [, , name, version, tag = 'next'] = process.argv;
-
-// A simple SemVer validation to validate the version
-const validVersion = /^\d+\.\d+\.\d+(-\w+\.\d+)?/;
-validateOrExit(
-  !!version && validVersion.test(version),
-  `No version provided or version did not match Semantic Versioning, expected: #.#.#-tag.# or #.#.#, got ${version}.`
-);
-
-
-const graph = readCachedProjectGraph();
-const project = graph.nodes[name];
-
-validateOrExit(
-  !!project,
- `Could not find project "${name}" in the workspace. Is the project.json configured correctly?`
-);
-
-const outputPath = project.data?.targets?.['build']?.options?.outputPath;
-validateOrExit(
-  !!outputPath,
-  `Could not find "build.options.outputPath" of project "${name}". Is project.json configured  correctly?`
-);
-
-process.chdir(outputPath);
-
-// Updating the version in "package.json" before publishing
-try {
-  const json = JSON.parse(readFileSync(`package.json`).toString());
-  json.version = version;
-  writeFileSync(`package.json`, JSON.stringify(json, null, 2));
-} catch (e) {
-  console.error(
-    chalk.bold.red(`Error reading package.json file from library build output.`)
+(async () => {
+  const options = minimist(process.argv.slice(2)) as ParsedArgs;
+  const [ projectName, ...restArgs ] = options._;
+  
+  validateOrExit(
+    restArgs.length === 0,
+    `Unknown arguments: ${restArgs.join(' ')}`
   );
-}
 
-// Execute "npm publish" to publish
-execSync(`npm publish --access public --tag ${tag}`);
+  const graph = devkit.readCachedProjectGraph();
+  const project = graph.nodes[projectName];
+
+  validateOrExit(
+    !!project,
+    `Could not find project "${projectName}" in the workspace. Is the project.json configured correctly?`,
+  );
+
+  const outputPath = project.data?.targets?.['build']?.options?.outputPath;
+
+  validateOrExit(
+    !!outputPath,
+    `Could not find "build.options.outputPath" of project "${project.name}". Is the project.json configured correctly?`,
+  );
+
+  process.chdir(outputPath);
+
+  const packageJson = await getPackageJson();
+  const versionRegex = /^\d+\.\d+\.\d+(-beta\.\d+)?$/;
+  
+  validateOrExit(
+    versionRegex.test(packageJson.version),
+    `Version "${packageJson.version}" of package "${packageJson.name}" is not valid.`
+  );
+
+  const [ , beta ] = packageJson.version.split('-');
+  const tag = beta ? 'beta' : 'latest';
+
+  try {
+    execSync(`npm publish --access public --tag ${tag}`);
+    console.log(`Package ${packageJson.name}@${packageJson.version} is published with tag ${tag}`);
+  } catch (e: unknown) {
+    console.log(String(e));
+    process.exit(1);
+  }
+})();
