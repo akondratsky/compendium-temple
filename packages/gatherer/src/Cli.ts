@@ -3,6 +3,7 @@ import yargs from 'yargs';
 import { SearchIteratorService } from './services/reposGathering/SearchIteratorService';
 import { MissionService } from './services/MissionService';
 import { DepsIteratorService } from './services/depsGathering/DepsIteratorService';
+import { PkgIteratorService } from './services/pkgGathering/PkgIteratorService';
 
 
 @injectable()
@@ -11,6 +12,7 @@ export class Cli {
     @inject(MissionService) private readonly mission: MissionService,
     @inject(SearchIteratorService) private readonly searchIterator: SearchIteratorService,
     @inject(DepsIteratorService) private readonly depsIterator: DepsIteratorService,
+    @inject(PkgIteratorService) private readonly pkgIterator: PkgIteratorService,
   ) {}
 
   async start(): Promise<void> {
@@ -47,6 +49,20 @@ export class Cli {
           }
           this.mission.token = token;
           await this.depsIterator.start();
+        }
+      )
+      .command(
+        'pkg',
+        '- start dependencies gathering (via package.json)',
+        yargs => yargs
+          .option('reset', { type: 'boolean', default: false })
+          .option('token', { type: 'string', demandOption: true }),
+        async ({ token, reset }) => {
+          if (reset) {
+            this.mission.reset();
+          }
+          this.mission.token = token;
+          await this.pkgIterator.start();
         }
       )
       .help(false)

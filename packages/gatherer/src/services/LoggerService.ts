@@ -7,7 +7,7 @@ export class LoggerService {
   }
 
   public warn(msg: string) {
-    console.log('\n', chalk.yellow(msg), '\n');
+    console.log(chalk.yellow(msg));
   }
 
   public info(msg: string) {
