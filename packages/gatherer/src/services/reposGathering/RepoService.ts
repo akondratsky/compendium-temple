@@ -20,9 +20,21 @@ export class RepoService {
     await Promise.all(repos.map(repo => this.saveRepo(repo)));
   }
 
+  public async getReposCount() {
+    return this.db.repository.count();
+  }
+
+  public async getRepoByOffset(offset: number) {
+    return await this.db.repository.findFirst({
+      skip: offset,
+      include: {
+        owner: true,
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
   private async saveRepo(repo: RepoSearchResultItem) {
-
-
     // wtf is this
     if (!repo.owner) return;
 
@@ -56,4 +68,6 @@ export class RepoService {
       throw new Error(`Error saving repository: ${(e as Error).message}`);
     }
   }
+
+
 }

@@ -28,11 +28,21 @@ export class DependenciesProvider implements IDependenciesProvider {
             repoId,
           },
         });
+
+        const packageIds: number[] = [];
+
+        for (const name of dependencies) {
+          const { id: packageId } = await tx.package.create({
+            data: { name, sourceUserId },
+          });
+          packageIds.push(packageId);
+        }
+
         await tx.dependencies.createMany({
-          data: dependencies.map((dependency) => ({
+          data: packageIds.map((packageId) => ({
             sourceUserId,
             repoId,
-            name: dependency,
+            packageId,
           })),
         });
       });

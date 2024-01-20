@@ -154,14 +154,22 @@ model Repository {
   updatedAt DateTime?
 }
 
+model Package {
+  id           Int            @id @default(autoincrement())
+  sourceUserId Int
+  name         String
+  Dependencies Dependencies[]
+}
+
 model Dependencies {
   id           Int @id @default(autoincrement())
   sourceUserId Int
 
-  repoId Int
-  name   String
+  repoId    Int
+  package   Package @relation(fields: [packageId], references: [id])
+  packageId Int
 
-  @@unique([repoId, name])
+  @@unique([repoId, packageId])
 }
 
 model GitHubUser {
