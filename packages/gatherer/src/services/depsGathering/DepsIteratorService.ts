@@ -1,11 +1,13 @@
 import { inject, injectable } from 'tsyringe';
 import { MissionService } from '../MissionService';
 import { RepoService } from '../reposGathering/RepoService';
-import { SbomService } from './SbomProvider';
+import { SbomError, SbomService } from './SbomProvider';
 import { LoggerService } from '../LoggerService';
 import { TimeService } from './TimeService';
 import { DependenciesService } from './DependenciesService';
 import dayjs from 'dayjs';
+import { SpdxSbom } from '@compendium-temple/api';
+import { RemovedReposService } from './RemovedReposService';
 
 @injectable()
 export class DepsIteratorService {
@@ -15,7 +17,8 @@ export class DepsIteratorService {
     @inject(SbomService) private readonly sbom: SbomService,
     @inject(LoggerService) private readonly logger: LoggerService,
     @inject(TimeService) private readonly time: TimeService,
-    @inject(DependenciesService) private readonly deps: DependenciesService
+    @inject(DependenciesService) private readonly deps: DependenciesService,
+    @inject(RemovedReposService) private readonly removed: RemovedReposService,
   ) {}
 
   public async start() {
@@ -23,6 +26,11 @@ export class DepsIteratorService {
     const count = await this.repos.getReposCount();
 
     this.logger.info(`!!! Starting from offset ${progress.lastOffset}`);
+
+    let sbom: SpdxSbom = {} as SpdxSbom;
+    let remaining = 0;
+    let reset = 0;
+
 
     while (progress.lastOffset < count) {
       const repo = await this.repos.getRepoByOffset(progress.lastOffset);
@@ -32,17 +40,29 @@ export class DepsIteratorService {
         throw new Error('Issue with repo record');
       }
 
-      const { sbom, remaining, reset } = await this.sbom.getSbom(repo?.owner?.login, repo.name);
+      let isSbomError = false;
 
-      await this.deps.saveDependencies(repo.id, sbom);
+      try {
+        const result = await this.sbom.getSbom(repo?.owner?.login, repo.name);
+        sbom = result.sbom;
+        remaining = result.remaining;
+        reset = result.reset;
+      } catch (e) {
+        if (e instanceof SbomError) {
+          isSbomError = true;
+          await this.removed.removeRepo(repo);
+        }
+      }
+      
+      if (!isSbomError) {
+        await this.deps.saveDependencies(repo.id, sbom);
+      }
 
       progress.lastOffset++;
-
       this.mission.saveProgress(progress);
+      this.logger.log(`done: ${repo.fullName}, limit: ${remaining}`);
 
-      this.logger.log(`saved: ${repo.fullName}, limit: ${remaining}`);
-
-      if (remaining < 100) {
+      if (!isSbomError && remaining < 100) {
         const timestamp = dayjs(reset * 1000).format('YYYY-MM-DD HH:mm:ss');
         this.logger.warn(`Limit is around to be reached (${remaining}), waiting until ${timestamp}`);
         await this.time.waitUntil(reset * 1000);
