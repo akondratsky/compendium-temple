@@ -12,31 +12,36 @@ export class DependenciesService {
     const deps = Object.keys(
       sbom.packages.reduce((depsObj, { name }) => {
         if (name?.startsWith('npm:')) {
-          depsObj[name.slice(4)] = true;
+          const packageName = name.slice(4);
+          // this is a service packages with types and I don't want to take them into account
+          if (!packageName.startsWith('@types/')) {
+            depsObj[packageName] = true;
+          }
         }
         return depsObj;
       }, {} as Record<string, true>)
     );
 
     this.db.$transaction(async (tx) => {
-      await tx.dependencies.deleteMany({
-        where: {
-          repoId,
-        },
-      });
-      const packageIds = [];
-      for (const name of deps) {
-        const { id: packageId } = await tx.package.create({
-          data: { name, sourceUserId: 0 },
-        });
-        packageIds.push(packageId);
-      }
+      const packageIds = await Promise.all(
+        deps.map(async (name) => {
+          const packageData = { name, sourceUserId: 0 };
+          const { id } = await tx.package.upsert({
+            create: packageData,
+            update: packageData,
+            where: { name },
+          });
+          return id;
+        })
+      );
+
       await tx.dependencies.createMany({
         data: packageIds.map((packageId) => ({
           sourceUserId: 0,
           repoId,
           packageId,
         })),
+        skipDuplicates: true,
       });
     });
   }

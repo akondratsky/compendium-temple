@@ -157,7 +157,7 @@ model Repository {
 model Package {
   id           Int            @id @default(autoincrement())
   sourceUserId Int
-  name         String
+  name         String         @unique
   Dependencies Dependencies[]
 }
 
