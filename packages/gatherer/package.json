@@ -1,0 +1,7 @@
+{
+  "name": "@compendium-temple/gatherer",
+  "bin": {
+    "gather": "compendium-gatherer.js"
+  },
+  "version": "0.0.1-beta.3"
+}

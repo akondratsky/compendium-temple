@@ -1,0 +1,141 @@
+{
+  "name": "gatherer",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/gatherer/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "main": "packages/gatherer/src/index.ts",
+        "outputPath": "dist/packages/gatherer",
+        "compiler": "tsc",
+        "format": ["cjs"],
+        "tsConfig": "packages/gatherer/tsconfig.lib.json",
+        "project": "packages/gatherer/package.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "rollupConfig": "packages/gatherer/rollup.config.js",
+        "assets": [
+          {
+            "glob": "packages/gatherer/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/gatherer/bin/compendium-gatherer.js",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "sourceMap": false,
+          "declaration": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      },
+      "dependsOn": ["^build"]
+    },
+    "publish": {
+      "command": "ts-node tools/publish.ts gatherer",
+      "dependsOn": [
+        "build"
+      ]
+    },
+
+
+    
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/gatherer/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "packages/gatherer/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+
+    "bump-local-beta": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node tools/bump-local-beta-version.ts gatherer"
+      }
+    },
+    "build-local-beta": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "main": "packages/gatherer/src/index.ts",
+        "outputPath": "dist/packages/gatherer",
+        "compiler": "tsc",
+        "format": ["cjs"],
+        "tsConfig": "packages/gatherer/tsconfig.lib.json",
+        "project": "packages/gatherer/package.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "rollupConfig": "packages/gatherer/rollup.config.js",
+        "assets": [
+          {
+            "glob": "packages/gatherer/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/gatherer/bin/compendium-gatherer.js",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "sourceMap": false,
+          "declaration": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      },
+      "dependsOn": [
+        "bump-local-beta",
+        "^publish-local"
+      ]
+    },
+    "publish-local": {
+      "command": "ts-node tools/publish-local.ts gatherer --global --autoInstall",
+      "dependsOn": [
+        "build-local-beta"
+      ]
+    }
+  },
+  "tags": []
+}

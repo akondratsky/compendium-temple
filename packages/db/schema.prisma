@@ -140,8 +140,8 @@ model Repository {
   isSecretsScanningPushProtectionEnabled Boolean?
 
   /// owner
-  gitHubUserId Int
-  owner        GitHubUser @relation(fields: [gitHubUserId], references: [id])
+  gitHubUserId Int?
+  owner        GitHubUser? @relation(fields: [gitHubUserId], references: [id])
 
   codeOfConductKey String?
   codeOfConduct    CodeOfConduct? @relation(fields: [codeOfConductKey], references: [key])

@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "../../dist/packages/gatherer",
+    "declaration": false,
+    "sourceMap": false,
+    "types": ["node"],
+    "esModuleInterop": true,
+    "noEmit": false
+  },
+  "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
+  "include": ["src/**/*.ts"]
+}
