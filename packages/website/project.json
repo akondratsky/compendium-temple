@@ -1,0 +1,45 @@
+{
+  "name": "website",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/website",
+  "projectType": "application",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docusaurus start packages/website --no-open"
+      }
+    },
+
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docusaurus build packages/website --out-dir ../../dist/packages/website"
+      },
+      "dependsOn": [
+        "^build"
+      ]
+    },
+
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docusaurus serve packages/website --port 3000 --dir ../../dist/packages/website --no-open"
+      },
+      "dependsOn": [
+        "^build"
+      ]
+    },
+
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/website/jest.config.ts",
+        "passWithNoTests": true,
+        "codeCoverage": true
+      }
+    }
+  },
+  "tags": []
+}

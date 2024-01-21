@@ -35,6 +35,10 @@ testem.log
 /typings
 .nx
 
+# Generated files
+.docusaurus
+.cache-loader
+
 # System Files
 .DS_Store
 Thumbs.db

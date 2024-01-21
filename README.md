@@ -72,7 +72,7 @@ _For some reason we cannot use tsyringe for injections, it may be caused the rea
 
 Folder: `packages/server`.
 
-- `nx serve server` - run server (development mode)
+- `nx dev server` - run server (development mode)
 - `nx build server`
 - `nx lint server`
 - `nx test server [--watch]` - run unit tests, with `--watch` in the watch mode
