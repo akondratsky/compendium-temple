@@ -39,7 +39,18 @@
         "passWithNoTests": true,
         "codeCoverage": true
       }
-    }
+    },
+
+    "swizzle": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docusaurus swizzle",
+        "cwd": "packages/website"
+      },
+      "dependsOn": [
+        "^build"
+      ]
+    },
   },
   "tags": []
 }
