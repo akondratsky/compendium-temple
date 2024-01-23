@@ -18,10 +18,7 @@
     "resolveJsonModule": true,
     "paths": {
       "@compendium-temple/api": ["packages/api/src/index.ts"],
-      "@compendium-temple/cli": ["packages/cli/src/index.ts"],
-      "@compendium-temple/config": ["packages/config/src/index.ts"],
-      "@compendium-temple/worker": ["packages/worker/src/index.ts"],
-      "@compendium-temple/spdx": ["packages/spdx/src/index.ts"]
+      "@compendium-temple/worker": ["packages/worker/src/index.ts"]
     },
     "typeRoots": ["node_modules/@types", "./env.d.ts"]
   },

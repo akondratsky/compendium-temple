@@ -1,0 +1,64 @@
+{
+  "name": "bff",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/bff/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/packages/bff",
+        "main": "packages/bff/src/main.ts",
+        "tsConfig": "packages/bff/tsconfig.app.json",
+        "isolatedConfig": true,
+        "webpackConfig": "packages/bff/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      },
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "dev": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "bff:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "bff:build:development"
+        },
+        "production": {
+          "buildTarget": "bff:build:production"
+        }
+      },
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/bff/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/bff/jest.config.ts",
+        "passWithNoTests": true,
+        "codeCoverage": true
+      }
+    }
+  },
+  "tags": []
+}
