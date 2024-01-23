@@ -3,5 +3,8 @@ declare namespace NodeJS {
     SERVER_AUTH_TOKEN_HASH_SALT: string;
     E2E_GITHUB_TOKEN: string;
     E2E_GITHUB_USER_ID: string;
+    WEBSITE_API_URL: string;
+    BFF_PORT: string;
+    NODE_ENV: string;
   }
 }

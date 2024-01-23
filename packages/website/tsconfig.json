@@ -5,6 +5,8 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM"],
     "types": ["vite/client", "vitest"]
   },
   "files": [],
