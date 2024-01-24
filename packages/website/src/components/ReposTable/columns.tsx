@@ -7,6 +7,7 @@ export const columns: TableProps<Repo>['columns'] = [
   {
     title: 'Name',
     dataIndex: 'fullName',
+    width: 200,
     render: (fullName: string, repo: Repo) => (
       <Link to={repo.htmlUrl} target='_blank'>{fullName}</Link>
     ),
@@ -14,10 +15,11 @@ export const columns: TableProps<Repo>['columns'] = [
   {
     title: 'Description',
     dataIndex: 'description',
+    width: 350,
   },
   {
     title: 'Lang',
-    width: 70,
+    width: 60,
     dataIndex: 'language',
     render: (language: string) => {
       return {
@@ -29,8 +31,10 @@ export const columns: TableProps<Repo>['columns'] = [
   {
     title: 'Dependencies',
     dataIndex: 'dependencies',
+    width: 450,
     render: (dependencies: string[]) => (
-      <Space style={{ gap: 4 }} wrap>
+      <Space style={{ gap: 4, minWidth: 80 }} wrap>
+        {!dependencies.length && <>no dependencies</>}
         {dependencies.map((dep) => (
           <Tag key={dep} style={{ margin: 0 }}>{dep}</Tag>
         ))}
@@ -75,7 +79,7 @@ export const columns: TableProps<Repo>['columns'] = [
   },
   {
     title: 'Pushed',
-    width: 120,
+    width: 110,
     dataIndex: 'pushedAt',
     render: renderDate,
   },
