@@ -155,17 +155,17 @@ model Repository {
 }
 
 model Package {
-  id           Int            @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
   sourceUserId Int
-  name         String         @unique
-  Dependencies Dependencies[]
+  name         String       @unique
+  Dependency   Dependency[]
 }
 
-model Dependencies {
+model Dependency {
   id           Int @id @default(autoincrement())
   sourceUserId Int
 
-  repoId    Int
+  repoId Int
 
   package   Package @relation(fields: [packageId], references: [id])
   packageId Int

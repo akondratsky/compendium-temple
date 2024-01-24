@@ -23,7 +23,7 @@ export class DependenciesProvider implements IDependenciesProvider {
             name: repo,
           },
         });
-        await tx.dependencies.deleteMany({
+        await tx.dependency.deleteMany({
           where: {
             repoId,
           },
@@ -38,7 +38,7 @@ export class DependenciesProvider implements IDependenciesProvider {
           packageIds.push(packageId);
         }
 
-        await tx.dependencies.createMany({
+        await tx.dependency.createMany({
           data: packageIds.map((packageId) => ({
             sourceUserId,
             repoId,
