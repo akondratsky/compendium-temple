@@ -5,6 +5,7 @@ import { pagination } from '../../store/pagination';
 import { search } from '../../services/repos';
 import { columns } from './columns';
 import { useEffect } from 'react';
+import { sorting } from '../../store/sorting';
 
 
 
@@ -42,7 +43,7 @@ export const ReposTable = observer(() => {
         scrollToFirstRowOnChange: true,
       }}
       onChange={(pagination, filters, sorter) => {
-        // TODO: sorting
+        sorting.update(Array.isArray(sorter) ? sorter : [sorter]);
         search.update();
       }}
       style={{ height: '100%', maxHeight: '100vh' }}

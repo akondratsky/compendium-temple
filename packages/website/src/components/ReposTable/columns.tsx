@@ -19,7 +19,7 @@ export const columns: TableProps<Repo>['columns'] = [
   },
   {
     title: 'Lang',
-    width: 60,
+    width: 70,
     dataIndex: 'language',
     render: (language: string) => {
       return {
@@ -44,18 +44,21 @@ export const columns: TableProps<Repo>['columns'] = [
   {
     title: 'Stars',
     width: 80,
+    sorter: { multiple: 1 },
     dataIndex: 'stargazersCount',
     render: renderCount,
   },
   {
     title: 'Forks',
     width: 80,
+    sorter: { multiple: 1 },
     dataIndex: 'forksCount',
     render: renderCount,
   },
   {
     title: 'Issues',
     width: 80,
+    sorter: { multiple: 1 },
     dataIndex: 'openIssuesCount',
     render: renderCount,
   },
@@ -68,18 +71,21 @@ export const columns: TableProps<Repo>['columns'] = [
   {
     title: 'Created',
     width: 120,
+    sorter: { multiple: 1 },
     dataIndex: 'createdAt',
     render: renderDate,
   },
   {
     title: 'Updated',
     width: 120,
+    sorter: { multiple: 1 },
     dataIndex: 'updatedAt',
     render: renderDate,
   },
   {
     title: 'Pushed',
     width: 110,
+    sorter: { multiple: 1 },
     dataIndex: 'pushedAt',
     render: renderDate,
   },

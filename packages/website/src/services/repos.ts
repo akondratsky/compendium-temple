@@ -3,6 +3,7 @@ import { RepoSearchResult } from '@compendium-temple/api';
 import { filter } from '../store/filter';
 import { pagination } from '../store/pagination';
 import { searchResults } from '../store/searchResults';
+import { sorting } from '../store/sorting';
 
 
 const searchRepos = async (): Promise<void> => {
@@ -12,6 +13,7 @@ const searchRepos = async (): Promise<void> => {
     language: filter.language,
     packages: filter.packages.map(p => +p.value), // package ID
     description: filter.description,
+    sort: sorting.state,
   });
 
   pagination.setTotal(data.total);
