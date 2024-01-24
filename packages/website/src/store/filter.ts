@@ -11,6 +11,7 @@ const FilterModel = types
     pkgSuggestions: types.array(PkgOptionModel),
     packages: types.array(PkgOptionModel),
     language: types.maybeNull(types.enumeration(['TypeScript', 'JavaScript'])),
+    description: types.string,
   })
   .actions((self) => ({
     setPkgSuggestions: (pkgs: Package[]) => {
@@ -33,6 +34,9 @@ const FilterModel = types
     setLanguage: (language: string | null) => {
       self.language = language;
     },
+    setDescription: (description: string) => {
+      self.description = description;
+    }
   }));
 
 export type PkgOption = Instance<typeof PkgOptionModel>;
@@ -41,4 +45,5 @@ export const filter = FilterModel.create({
   pkgSuggestions: [],
   language: null,
   packages: [],
+  description: '',
 });

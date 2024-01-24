@@ -106,6 +106,7 @@ model Repository {
   description   String?
   defaultBranch String?
   language      String?
+
   size          Int?
 
   // urls

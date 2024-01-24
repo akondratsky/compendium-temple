@@ -5,14 +5,23 @@ import { pagination } from '../store/pagination';
 import { searchResults } from '../store/searchResults';
 
 
-export const searchRepos = async (): Promise<void> => {
+const searchRepos = async (): Promise<void> => {
   const { data } = await api.post<RepoSearchResult>('/repos/search', {
     pageSize: +pagination.pageSize,
     page: pagination.currentPage,
     language: filter.language,
     packages: filter.packages.map(p => +p.value), // package ID
+    description: filter.description,
   });
 
   pagination.setTotal(data.total);
   searchResults.set(data.repos);
+};
+
+export const search = {
+  new: () => {
+    pagination.setCurrentPage(1);
+    searchRepos();
+  },
+  update: searchRepos,
 };

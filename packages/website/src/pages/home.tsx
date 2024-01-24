@@ -1,8 +1,6 @@
 import { Layout } from 'antd';
-
 import { SideMenu } from '../components/SideMenu';
-import { SearchResults } from '../components/SearchResults';
-
+import { ReposTable } from '../components/ReposTable';
 
 export const HomePage = () => {
   return (
@@ -23,7 +21,7 @@ export const HomePage = () => {
 
       <Layout style={{ marginLeft: 400 }}>
         <Layout.Content>
-          <SearchResults />
+          <ReposTable />
         </Layout.Content>
       </Layout>
     </Layout>

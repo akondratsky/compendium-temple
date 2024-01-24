@@ -4,5 +4,5 @@ export class SearchReposParams {
   /** Package IDs */
   public packages: number[] = [];
   public language: 'TypeScript' | 'JavaScript' | null = null;
-
+  public description: string | null = null;
 }

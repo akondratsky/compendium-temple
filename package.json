@@ -98,6 +98,7 @@
     "joi": "17.9.2",
     "keytar": "7.9.0",
     "lodash": "4.17.21",
+    "millify": "6.1.0",
     "minimist": "1.2.8",
     "mobx-react-lite": "4.0.5",
     "mobx-state-tree": "5.4.0",

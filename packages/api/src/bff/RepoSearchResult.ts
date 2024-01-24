@@ -1,6 +1,27 @@
 import { GitHubUser, License, Repository } from '@prisma/client'
 
-type RepoFields = 'id' | 'fullName' | 'description' | 'language' | 'htmlUrl';
+type RepoFields = 'id'
+  | 'fullName'
+  | 'description'
+  | 'language'
+  | 'htmlUrl'
+  | 'stargazersCount'
+  | 'forksCount'
+  | 'watchersCount'
+  | 'openIssuesCount'
+  | 'isDisabled'
+  | 'isFork'
+  | 'hasIssues'
+  | 'hasProjects'
+  | 'hasWiki'
+  | 'hasPages'
+  | 'hasDownloads'
+  | 'hasDiscussions'
+  | 'isArchived'
+  | 'isForkingAllowed'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'pushedAt';
 
 type OwnerFields = 'id' | 'login' | 'avatarUrl' | 'htmlUrl';
 

@@ -34,6 +34,15 @@ export class ReposService implements IReposService {
       });
     }
 
+    if (params.description) {
+      conditions.push({
+        description: {
+          contains: params.description,
+          mode: 'insensitive',
+        }
+      });
+    }
+
     const where: Prisma.RepositoryWhereInput = {};
 
     if (conditions.length) {
@@ -51,6 +60,25 @@ export class ReposService implements IReposService {
           description: true,
           language: true,
           htmlUrl: true,
+          stargazersCount: true,
+          forksCount: true,
+          watchersCount: true,
+          openIssuesCount: true,
+
+          isDisabled: true,
+          isFork: true,
+          hasIssues: true,
+          hasProjects: true,
+          hasWiki: true,
+          hasPages: true,
+          hasDownloads: true,
+          hasDiscussions: true,
+          isArchived: true,
+          isForkingAllowed: true,
+
+          createdAt: true,
+          updatedAt: true,
+          pushedAt: true,
 
           owner: {
             select: {
