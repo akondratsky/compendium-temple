@@ -166,6 +166,7 @@ model Dependencies {
   sourceUserId Int
 
   repoId    Int
+
   package   Package @relation(fields: [packageId], references: [id])
   packageId Int
 

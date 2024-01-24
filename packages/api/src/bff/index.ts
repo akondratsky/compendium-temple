@@ -1,2 +1,2 @@
 export { Package } from './Package';
-export { RepoSearchResult } from './RepoSearchResult';
+export { RepoSearchResult, RepoSearchResultItem } from './RepoSearchResult';

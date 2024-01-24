@@ -99,6 +99,8 @@
     "keytar": "7.9.0",
     "lodash": "4.17.21",
     "minimist": "1.2.8",
+    "mobx-react-lite": "4.0.5",
+    "mobx-state-tree": "5.4.0",
     "open": "9.1.0",
     "opener": "1.5.2",
     "ora": "5.4.1",

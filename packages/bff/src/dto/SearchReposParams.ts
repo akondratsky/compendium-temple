@@ -1,3 +1,8 @@
 export class SearchReposParams {
-  public packages?: string[];
+  public pageSize = 10;
+  public page = 1;
+  /** Package IDs */
+  public packages: number[] = [];
+  public language: 'TypeScript' | 'JavaScript' | null = null;
+
 }
