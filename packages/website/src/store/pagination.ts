@@ -1,14 +1,13 @@
 import { types } from 'mobx-state-tree';
-import { PAGE_SIZES } from '../constants';
 
 const PaginationModel = types
   .model({
     total: types.number,
-    pageSize: types.enumeration(PAGE_SIZES),
+    pageSize: types.number,
     currentPage: types.number,
   })
   .actions((self) => ({
-    setPageSize: (pageSize: typeof PAGE_SIZES[number]) => {
+    setPageSize: (pageSize: number) => {
       self.pageSize = pageSize;
     },
     setCurrentPage: (currentPage: number) => {
@@ -20,7 +19,7 @@ const PaginationModel = types
   }));
 
 export const pagination = PaginationModel.create({
-  pageSize: '10',
+  pageSize: 10,
   currentPage: 1,
   total: 0,
 });

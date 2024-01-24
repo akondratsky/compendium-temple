@@ -1,10 +1,11 @@
-import { Card, Typography } from 'antd';
+import { Card, Space, Tag, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import { Repo } from '../store/searchResults';
 
 type RepoCardProps = {
   repo: Repo;
 };
+
 
 const NoDescription = () => (
   <Typography.Text italic>
@@ -19,8 +20,16 @@ export const RepoCard = ({ repo }: RepoCardProps) => {
         <Link to={repo.htmlUrl} target='_blank'>{repo.fullName}</Link>
       </Typography.Title>
       <Typography.Paragraph>
-        {repo.description ?? <NoDescription /> }
+        Description: {repo.description ?? <NoDescription /> }
       </Typography.Paragraph>
+      <Typography.Paragraph>
+        Language: {repo.language ?? 'null'}
+      </Typography.Paragraph>
+      <Space wrap>
+        {repo.dependencies.map((dep) => (
+          <Tag key={dep} style={{ margin: 0 }}>{dep}</Tag>
+        ))}
+      </Space>
     </Card>
   )
 };

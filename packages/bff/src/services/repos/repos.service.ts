@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import type { RepoSearchResult } from '@compendium-temple/api';
 import { SearchReposParams } from '../../dto/SearchReposParams';
 import { DbClient } from '../../dataAccess/db';
+import { Prisma } from '@prisma/client';
 
 export interface IReposService {
   search(params: SearchReposParams): Promise<RepoSearchResult>;
@@ -11,10 +12,35 @@ export interface IReposService {
 export class ReposService implements IReposService {
   constructor(
     private readonly db: DbClient,
-  ) {}
+  ) { }
 
   async search(params: SearchReposParams): Promise<RepoSearchResult> {
-    const [ repos, total ] = await Promise.all([
+    const conditions: Prisma.RepositoryWhereInput[] = [];
+
+
+    if (params.packages.length) {
+      conditions.push(...params.packages.map((id) => ({
+        dependencies: {
+          some: {
+            package: { id },
+          }
+        }
+      })))
+    }
+
+    if (params.language) {
+      conditions.push({
+        language: params.language,
+      });
+    }
+
+    const where: Prisma.RepositoryWhereInput = {};
+
+    if (conditions.length) {
+      where.AND = conditions;
+    }
+
+    const [repos, total] = await Promise.all([
       this.db.repository.findMany({
         take: params.pageSize,
         skip: (params.page - 1) * params.pageSize,
@@ -50,23 +76,9 @@ export class ReposService implements IReposService {
             },
           },
         },
-        where: {
-          language: params.language ?? undefined,
-        },
+        where,
       }),
-
-      this.db.repository.count({
-        where: {
-          language: params.language ?? undefined,
-          AND: params.packages.map((packageId) => ({
-            dependencies: {
-              some: {
-                id: packageId,
-              },
-            },
-          })),
-        },
-      })
+      this.db.repository.count({ where })
     ]);
 
     return { repos, total };

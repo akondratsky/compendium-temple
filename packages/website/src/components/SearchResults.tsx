@@ -7,7 +7,7 @@ export const SearchResults = observer(() => {
   return (
     <>
       <ResultsControlPanel />
-      {searchResults.repos.map((repo) => (
+      {[...searchResults.repos].map((repo) => (
         <RepoCard key={repo.fullName} repo={repo} />
       ))}
     </>

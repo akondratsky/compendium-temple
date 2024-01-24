@@ -17,6 +17,7 @@ const RepoModel = types.model({
 
   license: types.maybeNull(types.string),
   owner: types.maybeNull(OwnerModel),
+  dependencies: types.array(types.string),
 });
 
 const SearchResultsModel = types
@@ -27,7 +28,7 @@ const SearchResultsModel = types
     set(repos: RepoSearchResultItem[]) {
       self.repos = cast(
         repos.map(
-          ({ dependencies, license, owner, ...repo}) => ({
+          ({ dependencies, license, owner, ...repo }) => ({
             ...repo,
             license: license?.name ?? null,
             owner: !owner ? null : {
@@ -36,6 +37,7 @@ const SearchResultsModel = types
               avatarUrl: owner.avatarUrl,
               htmlUrl: owner.htmlUrl,
             },
+            dependencies: dependencies.map(d => d.package.name),
           })
         ),
       );

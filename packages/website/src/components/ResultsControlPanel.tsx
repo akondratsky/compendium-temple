@@ -1,8 +1,9 @@
 import { Affix, Button, Flex, Pagination, theme } from 'antd';
 import { observer } from 'mobx-react-lite';
-import { PAGE_SIZES } from '../constants';
 import { pagination } from '../store/pagination';
 import { searchRepos } from '../services/repos';
+
+const PAGE_SIZES = [10, 25, 50, 100];
 
 export const ResultsControlPanel = observer(() => {
   const { token } = theme.useToken();
@@ -27,6 +28,11 @@ export const ResultsControlPanel = observer(() => {
           Search
         </Button>
         <Pagination
+          onChange={(page, pageSize) => {
+            pagination.setCurrentPage(page);
+            pagination.setPageSize(pageSize);
+            searchRepos();
+          }}
           total={pagination.total}
           pageSize={+pagination.pageSize}
           pageSizeOptions={PAGE_SIZES}
