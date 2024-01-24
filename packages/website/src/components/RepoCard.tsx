@@ -1,9 +1,9 @@
-import { RepoSearchResultItem } from '@compendium-temple/api';
 import { Card, Typography } from 'antd';
 import { Link } from 'react-router-dom';
+import { Repo } from '../store/searchResults';
 
 type RepoCardProps = {
-  repo: RepoSearchResultItem;
+  repo: Repo;
 };
 
 const NoDescription = () => (

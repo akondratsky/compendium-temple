@@ -152,6 +152,8 @@ model Repository {
   pushedAt  DateTime?
   createdAt DateTime?
   updatedAt DateTime?
+
+  dependencies Dependency[]
 }
 
 model Package {
@@ -165,7 +167,8 @@ model Dependency {
   id           Int @id @default(autoincrement())
   sourceUserId Int
 
-  repoId Int
+  Repository Repository? @relation(fields: [repoId], references: [id])
+  repoId     Int
 
   package   Package @relation(fields: [packageId], references: [id])
   packageId Int

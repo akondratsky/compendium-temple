@@ -3,7 +3,7 @@ import { PAGE_SIZES } from '../constants';
 
 const PaginationModel = types
   .model({
-    total: types.maybe(types.number),
+    total: types.number,
     pageSize: types.enumeration(PAGE_SIZES),
     currentPage: types.number,
   })
@@ -14,10 +14,13 @@ const PaginationModel = types
     setCurrentPage: (currentPage: number) => {
       self.currentPage = currentPage;
     },
+    setTotal(total: number) {
+      self.total = total;
+    },
   }));
 
 export const pagination = PaginationModel.create({
   pageSize: '10',
   currentPage: 1,
-  total: undefined
+  total: 0,
 });

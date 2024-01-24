@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { RepoSearchResult, RepoSearchResultItem } from '@compendium-temple/api';
+import type { RepoSearchResult } from '@compendium-temple/api';
 import { SearchReposParams } from '../../dto/SearchReposParams';
 import { DbClient } from '../../dataAccess/db';
 
@@ -18,18 +18,53 @@ export class ReposService implements IReposService {
       this.db.repository.findMany({
         take: params.pageSize,
         skip: (params.page - 1) * params.pageSize,
-        include: {
-          owner: true,
-          license: true,
-          codeOfConduct: true,
+
+        select: {
+          id: true,
+          fullName: true,
+          description: true,
+          language: true,
+          htmlUrl: true,
+
+          owner: {
+            select: {
+              id: true,
+              login: true,
+              avatarUrl: true,
+              htmlUrl: true,
+            },
+          },
+          license: {
+            select: {
+              name: true,
+            }
+          },
+          dependencies: {
+            select: {
+              package: {
+                select: {
+                  id: true,
+                  name: true,
+                }
+              },
+            },
+          },
         },
         where: {
           language: params.language ?? undefined,
-        }
+        },
       }),
+
       this.db.repository.count({
         where: {
           language: params.language ?? undefined,
+          AND: params.packages.map((packageId) => ({
+            dependencies: {
+              some: {
+                id: packageId,
+              },
+            },
+          })),
         },
       })
     ]);

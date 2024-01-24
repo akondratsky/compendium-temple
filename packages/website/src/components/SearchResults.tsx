@@ -1,22 +1,15 @@
-import { useEffect, useState } from 'react';
-import { RepoSearchResult, RepoSearchResultItem } from '@compendium-temple/api';
 import { RepoCard } from '../components/RepoCard';
-import { searchRepos } from '../services/repos';
-import { PaginationPanel } from './PaginationPanel';
+import { searchResults } from '../store/searchResults';
+import { ResultsControlPanel } from './ResultsControlPanel';
+import { observer } from 'mobx-react-lite';
 
-export const SearchResults = () => {
-  const [repos, setRepos] = useState<RepoSearchResultItem[]>([]);
-
-  useEffect(() => {
-    // searchRepos().then(setRepos);
-  }, []);
-
+export const SearchResults = observer(() => {
   return (
     <>
-      <PaginationPanel />
-      {repos.map((repo) => (
+      <ResultsControlPanel />
+      {searchResults.repos.map((repo) => (
         <RepoCard key={repo.fullName} repo={repo} />
       ))}
     </>
   )
-}
+});
