@@ -17,7 +17,6 @@ export class ReposService implements IReposService {
   async search(params: SearchReposParams): Promise<RepoSearchResult> {
     const conditions: Prisma.RepositoryWhereInput[] = [];
 
-
     if (params.packages.length) {
       conditions.push(...params.packages.map((id) => ({
         dependencies: {
@@ -105,6 +104,12 @@ export class ReposService implements IReposService {
           },
         },
         where,
+        orderBy: params.sort ? {
+          [params.sort.field]: {
+            sort: params.sort.direction === 'ascend' ? 'asc' : 'desc',
+            nulls: 'last',
+          },
+        } : undefined,
       }),
       this.db.repository.count({ where })
     ]);

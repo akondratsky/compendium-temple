@@ -13,7 +13,7 @@ const searchRepos = async (): Promise<void> => {
     language: filter.language,
     packages: filter.packages.map(p => +p.value), // package ID
     description: filter.description,
-    sort: sorting.state,
+    sort: sorting.getSortingParams(),
   });
 
   pagination.setTotal(data.total);

@@ -43,7 +43,10 @@ export const ReposTable = observer(() => {
         scrollToFirstRowOnChange: true,
       }}
       onChange={(pagination, filters, sorter) => {
-        sorting.update(Array.isArray(sorter) ? sorter : [sorter]);
+        if (Array.isArray(sorter)) {
+          throw new Error('Unexpected sorter type');
+        }
+        sorting.update(sorter.field as string, sorter.order as string);
         search.update();
       }}
       style={{ height: '100%', maxHeight: '100vh' }}
