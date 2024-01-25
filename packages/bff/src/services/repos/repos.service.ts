@@ -26,6 +26,17 @@ export class ReposService implements IReposService {
         }
       })))
     }
+    if (params.ignorePackages.length) {
+      conditions.push(...params.ignorePackages.map((id) => ({
+        NOT: {
+          dependencies: {
+            some: {
+              package: { id },
+            }
+          }
+        }
+      } as Prisma.RepositoryWhereInput)))
+    }
 
     if (params.language) {
       conditions.push({

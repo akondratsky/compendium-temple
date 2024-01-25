@@ -20,6 +20,7 @@ export class SearchReposParams {
   public page = 1;
   /** Package IDs */
   public searchPackages: number[] = [];
+  public ignorePackages: number[] = [];
   public language: 'TypeScript' | 'JavaScript' | null = null;
   public description: string | null = null;
 
