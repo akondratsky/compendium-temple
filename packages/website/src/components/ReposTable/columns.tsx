@@ -18,14 +18,15 @@ export const columns: TableProps<Repo>['columns'] = [
     width: 350,
   },
   {
-    title: 'Lang',
-    width: 70,
+    title: 'Lng',
+    width: 60,
     dataIndex: 'language',
     render: (language: string) => {
-      return {
+      const label = {
         'JavaScript': 'JS',
         'TypeScript': 'TS',
       }[language];
+      return <div style={{ minWidth: 40 }}>{label}</div>;
     },
   },
   {
@@ -70,14 +71,14 @@ export const columns: TableProps<Repo>['columns'] = [
   },
   {
     title: 'Created',
-    width: 120,
+    width: 110,
     sorter: true,
     dataIndex: 'createdAt',
     render: renderDate,
   },
   {
     title: 'Updated',
-    width: 120,
+    width: 110,
     sorter: true,
     dataIndex: 'updatedAt',
     render: renderDate,

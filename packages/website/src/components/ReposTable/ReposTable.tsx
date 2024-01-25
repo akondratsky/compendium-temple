@@ -17,7 +17,7 @@ export const ReposTable = observer(() => {
   return (
     <Table
       rowKey={(repo) => repo.fullName}
-      sticky={{ offsetHeader: 0, offsetSummary: 33 }}
+      sticky={{ offsetHeader: 0 }}
       dataSource={[...searchResults.repos]}
       size='large'
       pagination={{
@@ -38,7 +38,7 @@ export const ReposTable = observer(() => {
       }}
       columns={columns}
       scroll={{
-        x: true,
+        x: 1000,
         y: 'calc(100vh - 120px)',
         scrollToFirstRowOnChange: true,
       }}
