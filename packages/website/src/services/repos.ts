@@ -11,7 +11,8 @@ const searchRepos = async (): Promise<void> => {
     pageSize: +pagination.pageSize,
     page: pagination.currentPage,
     language: filter.language,
-    packages: filter.packages.map(p => +p.value), // package ID
+    searchPackages: filter.searchPackages.options.map(p => +p.value), // package ID
+    ignorePackages: filter.ignorePackages.options.map(p => +p.value), // package ID
     description: filter.description,
     sort: sorting.getSortingParams(),
     flags: {

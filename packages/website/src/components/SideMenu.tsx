@@ -1,5 +1,5 @@
 import { Button, Divider, Flex, theme } from 'antd';
-import { DescriptionFilter, FlagFilters, LanguageFilter, PackageFilter } from './filters';
+import { DescriptionFilter, FlagFilters, LanguageFilter, PackagesSearchFilter, PackagesIgnoreFilter } from './filters';
 import { search } from '../services/repos';
 
 
@@ -11,23 +11,23 @@ export const SideMenu = () => {
       style={{
         padding: '24px 24px 0 24px',
         height: '100%',
+        gap: 24,
         background: token.colorBgLayout
       }}
     >
-      <PackageFilter />
-      <Divider />
+      <PackagesSearchFilter />
+      <PackagesIgnoreFilter />
       <LanguageFilter />
-      <Divider />
       <DescriptionFilter />
 
-      <Divider />
+      <Divider style={{ marginTop: 0, marginBottom: 0 }} />
       <FlagFilters />
-      <Divider />
+      <Divider style={{ marginTop: 0, marginBottom: 48 }} />
 
       <Button
         type='primary'
+        size='large'
         style={{
-          marginTop: 48,
           marginRight: 'auto',
           width: '100%',
         }}

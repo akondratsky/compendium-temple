@@ -1,15 +1,20 @@
 import { useCallback, useRef, useState } from 'react';
-import { observer } from 'mobx-react-lite';
 import { AutoComplete } from 'antd';
 import { searchPackages } from '../../../services/packages';
 import { search } from '../../../services/repos';
 import { PkgOption, filter } from '../../../store/filter';
+import { observer } from 'mobx-react-lite';
 
-export const PackageInput = observer(() => {
+type PkgInputProps = {
+  placeholder: string;
+  onAdd: (pkg: PkgOption) => void;
+};
+
+export const PkgInput = observer(({ onAdd, placeholder }: PkgInputProps) => {
   const [value, setValue] = useState('');
 
   const searchHandler = (value: string) => {
-    searchPackages(value).then((packages) => filter.setPkgSuggestions(packages));
+    searchPackages(value).then((packages) => filter.pkgSuggestions.set(packages));
   };
 
   const autocompleteRef = useRef(null);
@@ -17,10 +22,10 @@ export const PackageInput = observer(() => {
   const changeHandler = (value: string) => setValue(value);
 
   const selectHandler = useCallback((value: string, option: PkgOption) => {
+    onAdd(option);
     setValue('');
-    filter.addPackage(option)
     search.new();
-  }, []);
+  }, [onAdd]);
 
   return (
     <AutoComplete
@@ -28,11 +33,9 @@ export const PackageInput = observer(() => {
       style={{ width: '100%' }}
       notFoundContent="No packages found"
       value={value}
-      onDropdownVisibleChange={(open) => console.log(open)}
-      virtual
-      placeholder="Filter by packages"
+      placeholder={placeholder}
       onChange={changeHandler}
-      options={[...filter.pkgSuggestions]}
+      options={[...filter.pkgSuggestions.options]}
       onSelect={selectHandler}
       onSearch={searchHandler}
     />

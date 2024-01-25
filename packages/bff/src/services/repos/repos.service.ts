@@ -17,8 +17,8 @@ export class ReposService implements IReposService {
   async search(params: SearchReposParams): Promise<RepoSearchResult> {
     const conditions: Prisma.RepositoryWhereInput[] = [];
 
-    if (params.packages.length) {
-      conditions.push(...params.packages.map((id) => ({
+    if (params.searchPackages.length) {
+      conditions.push(...params.searchPackages.map((id) => ({
         dependencies: {
           some: {
             package: { id },

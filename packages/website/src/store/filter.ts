@@ -1,93 +1,62 @@
 import { Instance, cast, types } from 'mobx-state-tree';
 import { Package } from '@compendium-temple/api';
+import { FlagFiltersModel } from './FlagFiltersModel';
 
 const PkgOptionModel = types.model({
   label: types.string,
   value: types.string,
 });
 
-const FlagFiltersModel = types
+const PackageOptionsModel = types
   .model({
-    onlyWithIssuesEnabled: types.boolean,
-    onlyWithProjectsEnabled: types.boolean,
-    onlyWithWikiEnabled: types.boolean,
-    onlyWithPagesEnabled: types.boolean,
-    onlyWithDownloads: types.boolean,
-    onlyWithDiscussionsEnabled: types.boolean,
-    skipDisabled: types.boolean,
-    skipArchived: types.boolean,
-    forkingOnlyAllowed: types.boolean,
+    options: types.array(PkgOptionModel),
   })
   .actions((self) => ({
-    setOnlyWithIssuesEnabled: (enabled: boolean) => {
-      self.onlyWithIssuesEnabled = enabled;
+    set: (options: Package[]) => {
+      self.options = cast(options.map((option) => ({
+        label: option.name,
+        value: String(option.id),
+      })));
     },
-    setSkipDisabled: (skip: boolean) => {
-      self.skipDisabled = skip;
+    add: (option: PkgOption) => {
+      if (!self.options.find((o) => o.label === option.label)) {
+        self.options.push(option);
+      }
     },
-    setOnlyWithProjectsEnabled: (enabled: boolean) => {
-      self.onlyWithProjectsEnabled = enabled;
+    remove: (label: string) => {
+      self.options = cast(self.options.filter((option) => option.label !== label));
     },
-    setOnlyWithWikiEnabled: (enabled: boolean) => {
-      self.onlyWithWikiEnabled = enabled;
-    },
-    setOnlyWithPagesEnabled: (enabled: boolean) => {
-      self.onlyWithPagesEnabled = enabled;
-    },
-    setWithDownloads: (enabled: boolean) => {
-      self.onlyWithDownloads = enabled;
-    },
-    setOnlyWithDiscussionsEnabled: (enabled: boolean) => {
-      self.onlyWithDiscussionsEnabled = enabled;
-    },
-    setSkipArchived: (skip: boolean) => {
-      self.skipArchived = skip;
-    },
-    setForkingOnlyAllowed: (allowed: boolean) => {
-      self.forkingOnlyAllowed = allowed;
+    reset: () => {
+      self.options = cast([]);
     },
   }));
 
 const FilterModel = types
   .model({
-    pkgSuggestions: types.array(PkgOptionModel),
-    packages: types.array(PkgOptionModel),
+    pkgSuggestions: PackageOptionsModel,
+    searchPackages: PackageOptionsModel,
+    ignorePackages: PackageOptionsModel,
     language: types.maybeNull(types.enumeration(['TypeScript', 'JavaScript'])),
     description: types.string,
     flags: FlagFiltersModel,
   })
   .actions((self) => ({
-    setPkgSuggestions: (pkgs: Package[]) => {
-      self.pkgSuggestions = cast(pkgs.map(({ id, name }) => ({
-        label: name,
-        value: String(id),
-      })));
-    },
-    addPackage: (pkg: PkgOption) => {
-      if (!self.packages.find((p) => p.label === pkg.label)) {
-        self.packages.push(pkg);
-      }
-    },
-    removePackage: (label: string) => {
-      self.packages = cast(self.packages.filter((pkg) => pkg.label !== label));
-    },
-    resetPackages: () => {
-      self.packages = cast([]);
-    },
     setLanguage: (language: string | null) => {
       self.language = language;
     },
     setDescription: (description: string) => {
       self.description = description;
-    }
+    },
   }));
 
 export type PkgOption = Instance<typeof PkgOptionModel>;
+export type Packages = Instance<typeof FilterModel>['searchPackages']
 
 export const filter = FilterModel.create({
-  pkgSuggestions: [],
+  pkgSuggestions: PackageOptionsModel.create({ options: [] }),
+  searchPackages: PackageOptionsModel.create({ options: [] }),
+  ignorePackages: PackageOptionsModel.create({ options: [] }),
   language: null,
-  packages: [],
   description: '',
   flags: FlagFiltersModel.create({
     onlyWithIssuesEnabled: false,

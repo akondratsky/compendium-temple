@@ -1,18 +1,22 @@
 import { Space, Tag } from 'antd';
-import { observer } from 'mobx-react-lite';
-import { filter } from '../../../store/filter';
+import { PkgOption } from '../../../store/filter';
 import { search } from '../../../services/repos';
 
-export const Packages = observer(() => {
+type PkgTagsProps = {
+  packages: PkgOption[];
+  onRemove: (pkgLabel: string) => void;
+}
+
+export const PkgTags = ({ onRemove, packages }: PkgTagsProps) => {
   return (
     <Space wrap style={{ gap: 4, marginTop: 8 }}>
-      {filter.packages.map((pkg) => (
+      {packages.map((pkg) => (
         <Tag
           key={pkg.value}
           closable
           style={{ margin: 0 }}
           onClose={() => {
-            filter.removePackage(pkg.label);
+            onRemove(pkg.label);
             search.new();
           }}
         >
@@ -20,5 +24,5 @@ export const Packages = observer(() => {
         </Tag>
       ))}
     </Space>
-  )
-});
+  );
+};
