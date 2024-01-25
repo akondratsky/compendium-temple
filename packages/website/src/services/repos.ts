@@ -14,6 +14,17 @@ const searchRepos = async (): Promise<void> => {
     packages: filter.packages.map(p => +p.value), // package ID
     description: filter.description,
     sort: sorting.getSortingParams(),
+    flags: {
+      onlyWithIssuesEnabled: filter.flags.onlyWithIssuesEnabled,
+      onlyWithProjectsEnabled: filter.flags.onlyWithProjectsEnabled,
+      onlyWithWikiEnabled: filter.flags.onlyWithWikiEnabled,
+      onlyWithPagesEnabled: filter.flags.onlyWithPagesEnabled,
+      onlyWithDownloads: filter.flags.onlyWithDownloads,
+      onlyWithDiscussionsEnabled: filter.flags.onlyWithDiscussionsEnabled,
+      skipDisabled: filter.flags.skipDisabled,
+      skipArchived: filter.flags.skipArchived,
+      forkingOnlyAllowed: filter.flags.forkingOnlyAllowed,
+    }
   });
 
   pagination.setTotal(data.total);

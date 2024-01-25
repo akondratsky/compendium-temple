@@ -34,7 +34,7 @@ export const columns: TableProps<Repo>['columns'] = [
     width: 450,
     render: (dependencies: string[]) => (
       <Space style={{ gap: 4, minWidth: 80 }} wrap>
-        {!dependencies.length && <>no dependencies</>}
+        {!dependencies.length && <>no dependencies (not parsed?)</>}
         {dependencies.map((dep) => (
           <Tag key={dep} style={{ margin: 0 }}>{dep}</Tag>
         ))}

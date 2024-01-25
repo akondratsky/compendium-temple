@@ -1,6 +1,7 @@
 import { Space, Tag } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { filter } from '../../../store/filter';
+import { search } from '../../../services/repos';
 
 export const Packages = observer(() => {
   return (
@@ -10,7 +11,10 @@ export const Packages = observer(() => {
           key={pkg.value}
           closable
           style={{ margin: 0 }}
-          onClose={() => filter.removePackage(pkg.label)}
+          onClose={() => {
+            filter.removePackage(pkg.label);
+            search.new();
+          }}
         >
           {pkg.label}
         </Tag>

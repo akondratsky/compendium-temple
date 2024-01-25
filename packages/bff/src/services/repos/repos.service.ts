@@ -42,6 +42,34 @@ export class ReposService implements IReposService {
       });
     }
 
+    if (params.flags.onlyWithIssuesEnabled) {
+      conditions.push({ hasIssues: true });
+    }
+    if (params.flags.onlyWithProjectsEnabled) {
+      conditions.push({ hasProjects: true });
+    }
+    if (params.flags.onlyWithWikiEnabled) {
+      conditions.push({ hasWiki: true });
+    }
+    if (params.flags.onlyWithPagesEnabled) {
+      conditions.push({ hasPages: true });
+    }
+    if (params.flags.onlyWithDownloads) {
+      conditions.push({ hasDownloads: true });
+    }
+    if (params.flags.onlyWithDiscussionsEnabled) {
+      conditions.push({ hasDiscussions: true });
+    }
+    if (params.flags.skipDisabled) {
+      conditions.push({ isDisabled: false });
+    }
+    if (params.flags.skipArchived) {
+      conditions.push({ isArchived: false });
+    }
+    if (params.flags.forkingOnlyAllowed) {
+      conditions.push({ isForkingAllowed: true });
+    }
+
     const where: Prisma.RepositoryWhereInput = {};
 
     if (conditions.length) {

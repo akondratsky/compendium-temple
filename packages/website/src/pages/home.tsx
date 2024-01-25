@@ -1,14 +1,15 @@
-import { Layout } from 'antd';
+import { Layout, theme } from 'antd';
 import { SideMenu } from '../components/SideMenu';
 import { ReposTable } from '../components/ReposTable';
 
 export const HomePage = () => {
+  const { token } = theme.useToken();
   return (
     <Layout>
       <Layout.Sider
         width={400}
         style={{
-          padding: 8,
+          background: token.colorBgBase,
           overflow: 'auto',
           height: '100vh',
           position: 'fixed',

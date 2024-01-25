@@ -9,7 +9,7 @@ const OwnerModel = types.model({
 });
 
 const FlagsModel = types.model({
-  isFork: types.boolean,
+  isFork: types.boolean, // TODO
   isDisabled: types.maybeNull(types.boolean),
   hasIssues: types.maybeNull(types.boolean),
   hasProjects: types.maybeNull(types.boolean),
@@ -19,7 +19,7 @@ const FlagsModel = types.model({
   hasDiscussions: types.maybeNull(types.boolean),
   isArchived: types.maybeNull(types.boolean),
   isForkingAllowed: types.maybeNull(types.boolean),
-})
+});
 
 const RepoModel = types.model({
   id: types.number,

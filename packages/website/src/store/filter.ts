@@ -6,12 +6,55 @@ const PkgOptionModel = types.model({
   value: types.string,
 });
 
+const FlagFiltersModel = types
+  .model({
+    onlyWithIssuesEnabled: types.boolean,
+    onlyWithProjectsEnabled: types.boolean,
+    onlyWithWikiEnabled: types.boolean,
+    onlyWithPagesEnabled: types.boolean,
+    onlyWithDownloads: types.boolean,
+    onlyWithDiscussionsEnabled: types.boolean,
+    skipDisabled: types.boolean,
+    skipArchived: types.boolean,
+    forkingOnlyAllowed: types.boolean,
+  })
+  .actions((self) => ({
+    setOnlyWithIssuesEnabled: (enabled: boolean) => {
+      self.onlyWithIssuesEnabled = enabled;
+    },
+    setSkipDisabled: (skip: boolean) => {
+      self.skipDisabled = skip;
+    },
+    setOnlyWithProjectsEnabled: (enabled: boolean) => {
+      self.onlyWithProjectsEnabled = enabled;
+    },
+    setOnlyWithWikiEnabled: (enabled: boolean) => {
+      self.onlyWithWikiEnabled = enabled;
+    },
+    setOnlyWithPagesEnabled: (enabled: boolean) => {
+      self.onlyWithPagesEnabled = enabled;
+    },
+    setWithDownloads: (enabled: boolean) => {
+      self.onlyWithDownloads = enabled;
+    },
+    setOnlyWithDiscussionsEnabled: (enabled: boolean) => {
+      self.onlyWithDiscussionsEnabled = enabled;
+    },
+    setSkipArchived: (skip: boolean) => {
+      self.skipArchived = skip;
+    },
+    setForkingOnlyAllowed: (allowed: boolean) => {
+      self.forkingOnlyAllowed = allowed;
+    },
+  }));
+
 const FilterModel = types
   .model({
     pkgSuggestions: types.array(PkgOptionModel),
     packages: types.array(PkgOptionModel),
     language: types.maybeNull(types.enumeration(['TypeScript', 'JavaScript'])),
     description: types.string,
+    flags: FlagFiltersModel,
   })
   .actions((self) => ({
     setPkgSuggestions: (pkgs: Package[]) => {
@@ -46,4 +89,15 @@ export const filter = FilterModel.create({
   language: null,
   packages: [],
   description: '',
+  flags: FlagFiltersModel.create({
+    onlyWithIssuesEnabled: false,
+    onlyWithProjectsEnabled: false,
+    onlyWithWikiEnabled: false,
+    onlyWithPagesEnabled: false,
+    onlyWithDownloads: false,
+    onlyWithDiscussionsEnabled: false,
+    skipDisabled: false,
+    skipArchived: false,
+    forkingOnlyAllowed: false,
+  }),
 });
