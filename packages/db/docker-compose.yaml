@@ -1,3 +1,4 @@
+# only for local development
 version: "3.9"
 name: "compendium-temple"
 services:

@@ -2,15 +2,6 @@
   "name": "templates-compendium",
   "version": "3.3.3",
   "license": "MIT",
-  "scripts": {
-    "db:start": "docker-compose --env-file=.env -f packages/db/docker-compose.yaml up -d",
-    "db:reset": "prisma migrate reset --schema=packages/db/schema.prisma && npm run db:push",
-    "db:push": "prisma db push  --schema=packages/db/schema.prisma",
-    "db:migrate": "prisma migrate dev --schema=packages/db/schema.prisma",
-    "db:client": "npm run db:client:format && npm run db:client:generate",
-    "db:client:format": "prisma format --schema=packages/db/schema.prisma",
-    "db:client:generate": "prisma generate --schema=packages/db/schema.prisma"
-  },
   "engines": {
     "node": ">=18.0.0"
   },

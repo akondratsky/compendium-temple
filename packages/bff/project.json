@@ -58,7 +58,8 @@
         "passWithNoTests": true,
         "codeCoverage": true
       }
-    }
+    },
+    "docker": {}
   },
   "tags": []
 }

@@ -26,11 +26,18 @@
         "{workspaceRoot}/.eslintignore"
       ]
     },
-    "deploy": {
+    "docker": {
       "executor": "nx:run-commands",
       "options": {
+        "parallel": false,
+        "env": {
+          "DOCKER_DEFAULT_PLATFORM": "linux/amd64"
+        },
         "commands": [
-          "kubectl apply -f ./packages/$NX_TASK_TARGET_PROJECT/deployment.yaml"
+          "docker build -t compendium-nx -f $PWD/Dockerfile.nx .",
+          "docker build -t compendium-base -f $PWD/Dockerfile.base .",
+          "docker build -t ghakondratsky/compendium-$NX_TASK_TARGET_PROJECT:latest ./packages/$NX_TASK_TARGET_PROJECT",
+          "echo docker push ghakondratsky/compendium-$NX_TASK_TARGET_PROJECT:latest"
         ]
       }
     }

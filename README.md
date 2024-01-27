@@ -38,13 +38,13 @@ Folder: `packages/db`.
 
 This projects uses ORM [Primsa](https://www.prisma.io/docs/getting-started). For local development database is kept under the `packages/db/.data` folder. Schema is kept in the `packages/db/schema.prisma` file.
 
-- `npm run db:start` - run database in the Docker
-- `npm run db:reset` - resets all the data in database and recreates tables
-- `npm run db:push` - push initial schema to database
-- `npm run db:migrate` - create migration for the database
-- `npm run db:client` - generate client for the database (runs format and generate tasks)
-- `npm run db:client:format` - run schema formatting
-- `npm run db:client:generate` - generate client code for the schema
+- `nx db:start` - run database in the Docker
+- `nx db:reset` - resets all the data in database and recreates tables
+- `nx db:push` - push initial schema to database
+- `nx db:migrate` - create migration for the database
+- `nx db:client` - generate client for the database (runs format and generate tasks)
+- `nx db:client:format` - run schema formatting
+- `nx db:client:generate` - generate client code for the schema
     "db:client:format": "prisma format --schema=packages/db/schema.prisma",
     "db:client:generate": "prisma generate --schema=packages/db/schema.prisma"
 

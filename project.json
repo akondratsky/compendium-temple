@@ -9,6 +9,56 @@
         "config": ".verdaccio/config.yml",
         "storage": ".verdaccio/storage"
       }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "kubectl apply -f ./deployment.yaml"
+        ]
+      }
+    },
+
+    "db:client": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          "prisma format --schema=packages/db/schema.prisma",
+          "prisma generate --schema=packages/db/schema.prisma"
+        ]
+      }
+    },
+
+    "db:reset": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          "prisma migrate reset --schema=packages/db/schema.prisma",
+          "prisma db push  --schema=packages/db/schema.prisma"
+        ]
+      }
+    },
+
+    "db:migrate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          "prisma migrate dev --schema=packages/db/schema.prisma"
+        ]
+      }
+    },
+
+    "db:start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "commands": [
+          "docker-compose --env-file=.env -f packages/db/docker-compose.yaml up -d"
+        ]
+      }
     }
   }
 }

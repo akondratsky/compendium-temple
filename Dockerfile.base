@@ -1,0 +1,17 @@
+FROM compendium-nx as compendium-base
+
+WORKDIR /app
+
+COPY ./package.json .
+COPY ./package-lock.json .
+COPY ./env.d.ts .
+COPY ./nx.json .
+COPY ./project.json .
+COPY ./tsconfig.base.json .
+COPY ./tools ./tools
+
+COPY ./node_modules ./node_modules
+COPY ./packages ./packages
+
+# generate Prisma client
+RUN nx db:client
