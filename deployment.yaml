@@ -58,11 +58,11 @@ spec:
               key: DB_POSTGRES_PASSWORD
         resources:
           limits:
-            cpu: "2"
-            memory: "5Gi"
+            cpu: "0.5"
+            memory: "4Gi"
           requests:
-            cpu: "1"
-            memory: "3Gi"
+            cpu: "0.5"
+            memory: "4Gi"
         volumeMounts:
         - name: database-volume
           mountPath: /var/lib/postgresql/data
@@ -79,10 +79,10 @@ spec:
               key: DB_CONNECTION_STRING
         resources:
           limits:
-            cpu: "2"
-            memory: "5Gi"
+            cpu: "0.5"
+            memory: "3Gi"
           requests:
-            cpu: "1"
+            cpu: "0.5"
             memory: "3Gi"
       
       volumes:

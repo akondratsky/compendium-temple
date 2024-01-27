@@ -1,4 +1,4 @@
-FROM node:18-alpine as compendium-nx
+FROM 18-alpine3.19 as compendium-nx
 
 RUN apk add g++ make py3-pip
 
@@ -7,5 +7,3 @@ EXPOSE 8080
 WORKDIR /app
 
 RUN npm i -g nx@17.0.1
-
-
