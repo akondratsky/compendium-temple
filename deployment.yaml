@@ -8,6 +8,7 @@ spec:
     storage: 80Gi
   accessModes:
     - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
   hostPath:
     # security is in my nature
     path: /root/database
@@ -32,18 +33,16 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: compendium-bff-deployment
+  name: compendium-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: compendium-app
-      name: db
   template:
     metadata:
       labels:
         app: compendium-app
-        name: db
     spec:
       containers:
       # DB
