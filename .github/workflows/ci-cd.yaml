@@ -36,7 +36,10 @@ jobs:
         run: npm ci
       
       - name: Prisma
-        run: nx db:client
+        uses: mansagroup/nrwl-nx-action@v3
+        with:
+          targets: db:client
+          projects: compendium-temple
 
       - name: Lint
         uses: mansagroup/nrwl-nx-action@v3
