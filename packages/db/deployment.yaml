@@ -48,6 +48,12 @@ spec:
         image: postgres
         ports:
         - containerPort: 5432
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: compendium-secrets
+              key: DB_POSTGRES_PASSWORD
         resources:
           limits:
             cpu: "2"
