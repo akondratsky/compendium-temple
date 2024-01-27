@@ -1,14 +1,17 @@
 on:
-  pull_request:  
+  pull_request:
+  push:
+    branches:
+      - main
 
-name: Review Pull Request
+name: "CI/CD"
 
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN}}
 
 jobs:
   review:
-    name: Review Pull Request Job
+    name: "CI/CD Job"
     runs-on: ubuntu-latest
     steps:
       - name: Setup Node
@@ -50,3 +53,7 @@ jobs:
         uses: mansagroup/nrwl-nx-action@v3
         with:
           targets: build
+
+      - name: Test CI/CD
+        if: github.event_name == 'push'
+        run: echo "Deployment..."

@@ -277,7 +277,7 @@ describe('Normal Flow', () => {
     });
 
     it('creates dependencies in db', async () => {
-      const dependencies = await db.dependencies.findMany({});
+      const dependencies = await db.dependency.findMany({});
       expect(dependencies).toHaveLength(3);
     });
   });

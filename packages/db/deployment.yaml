@@ -1,0 +1,64 @@
+# PERSISTENT VOLUME
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: compendium-persistent-volume
+spec:
+  capacity:
+    storage: 80Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    # security is in my nature
+    path: /root/database
+
+---
+
+# PERSISTENT VOLUME CLAIM
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: compendium-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi
+
+---
+
+# DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compendium-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: compendium-app
+  template:
+    metadata:
+      labels:
+        app: compendium-app
+    spec:
+      containers:
+      - name: compendium-db
+        image: postgres
+        ports:
+        - containerPort: 5432
+        resources:
+          limits:
+            cpu: "2"
+            memory: "5Gi"
+          requests:
+            cpu: "1"
+            memory: "3Gi"
+        volumeMounts:
+        - name: database-volume
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: database-volume
+        persistentVolumeClaim:
+          claimName: compendium-persistent-volume-claim

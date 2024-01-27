@@ -25,6 +25,14 @@
         "{workspaceRoot}/.eslintrc.json",
         "{workspaceRoot}/.eslintignore"
       ]
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "kubectl apply -f ./packages/$NX_TASK_TARGET_PROJECT/deployment.yaml"
+        ]
+      }
     }
   },
   "generators": {
