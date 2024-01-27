@@ -62,7 +62,13 @@ jobs:
         with:
           targets: docker:build
           projects: bff
-      
+
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Docker Push
         if: github.event_name == 'push'
         uses: mansagroup/nrwl-nx-action@v3

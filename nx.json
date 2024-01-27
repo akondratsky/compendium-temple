@@ -15,10 +15,13 @@
   },
   "extends": "nx/presets/npm.json",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+
+
   "targetDefaults": {
     "test": {
       "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
     },
+  
     "lint": {
       "inputs": [
         "default",
@@ -26,6 +29,7 @@
         "{workspaceRoot}/.eslintignore"
       ]
     },
+  
     "docker:build": {
       "executor": "nx:run-commands",
       "options": {
@@ -40,6 +44,7 @@
         ]
       }
     },
+
     "docker:push": {
       "executor": "nx:run-commands",
       "options": {
@@ -47,6 +52,8 @@
       }
     }
   },
+
+
   "generators": {
     "@nx/react": {
       "application": {

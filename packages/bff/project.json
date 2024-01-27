@@ -59,7 +59,8 @@
         "codeCoverage": true
       }
     },
-    "docker:build": {}
+    "docker:build": {},
+    "docker:push": {}
   },
   "tags": []
 }
