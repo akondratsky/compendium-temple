@@ -21,7 +21,7 @@ export class DependenciesService {
       })
     );
 
-    await this.db.dependencies.createMany({
+    await this.db.dependency.createMany({
       data: packageIds.map((packageId) => ({
         sourceUserId: 0,
         repoId,
