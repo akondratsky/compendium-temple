@@ -59,7 +59,7 @@
         "codeCoverage": true
       }
     },
-    "docker": {}
+    "docker:build": {}
   },
   "tags": []
 }

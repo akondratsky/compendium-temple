@@ -38,12 +38,12 @@
           "docker build -t compendium-base -f $PWD/Dockerfile.base .",
           "docker build -t ghakondratsky/compendium-$NX_TASK_TARGET_PROJECT:latest ./packages/$NX_TASK_TARGET_PROJECT"
         ]
-      },
-      "docker:push": {
-        "executor": "nx:run-commands",
-        "options": {
-          "command": "docker push ghakondratsky/compendium-$NX_TASK_TARGET_PROJECT:latest"
-        }
+      }
+    },
+    "docker:push": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker push ghakondratsky/compendium-$NX_TASK_TARGET_PROJECT:latest"
       }
     }
   },
