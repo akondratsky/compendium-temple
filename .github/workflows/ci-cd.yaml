@@ -56,4 +56,5 @@ jobs:
 
       - name: Test CI/CD
         if: github.event_name == 'push'
-        run: echo "Deployment..."
+        run: |
+          kubectl create secret generic DB_POSTGRES_PASSWORD --from-literal='${{ secrets.DB_POSTGRES_PASSWORD }}'"
