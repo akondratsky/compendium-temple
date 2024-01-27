@@ -81,5 +81,5 @@ jobs:
         uses: mansagroup/nrwl-nx-action@v3
         with:
           targets: deploy
-          projects: db, bff
+          projects: compendium-temple
         

@@ -12,6 +12,3 @@ COPY ./tools ./tools
 
 COPY ./node_modules ./node_modules
 COPY ./packages ./packages
-
-# generate Prisma client
-RUN nx db:client
