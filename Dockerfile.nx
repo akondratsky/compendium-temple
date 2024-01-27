@@ -1,4 +1,4 @@
-FROM 18-alpine3.19 as compendium-nx
+FROM node:18-alpine3.19 as compendium-nx
 
 RUN apk add g++ make py3-pip
 
