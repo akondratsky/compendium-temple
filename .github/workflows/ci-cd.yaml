@@ -54,9 +54,23 @@ jobs:
         with:
           targets: build
 
+      - name: Docker Build
+        uses: mansagroup/nrwl-nx-action@v3
+        with:
+          targets: docker:build
+          projects: bff
+      
+      - name: Docker Push
+        if: github.event_name == 'push'
+        uses: mansagroup/nrwl-nx-action@v3
+        with:
+          targets: docker:push
+          projects: bff
+
       - name: Deploy
         if: github.event_name == 'push'
         uses: mansagroup/nrwl-nx-action@v3
         with:
           targets: deploy
-          projects: db
+          projects: db, bff
+        

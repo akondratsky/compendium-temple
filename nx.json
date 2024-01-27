@@ -26,7 +26,7 @@
         "{workspaceRoot}/.eslintignore"
       ]
     },
-    "docker": {
+    "docker:build": {
       "executor": "nx:run-commands",
       "options": {
         "parallel": false,
@@ -36,9 +36,14 @@
         "commands": [
           "docker build -t compendium-nx -f $PWD/Dockerfile.nx .",
           "docker build -t compendium-base -f $PWD/Dockerfile.base .",
-          "docker build -t ghakondratsky/compendium-$NX_TASK_TARGET_PROJECT:latest ./packages/$NX_TASK_TARGET_PROJECT",
-          "echo docker push ghakondratsky/compendium-$NX_TASK_TARGET_PROJECT:latest"
+          "docker build -t ghakondratsky/compendium-$NX_TASK_TARGET_PROJECT:latest ./packages/$NX_TASK_TARGET_PROJECT"
         ]
+      },
+      "docker:push": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "docker push ghakondratsky/compendium-$NX_TASK_TARGET_PROJECT:latest"
+        }
       }
     }
   },
