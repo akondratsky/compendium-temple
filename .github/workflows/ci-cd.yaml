@@ -54,14 +54,6 @@ jobs:
         with:
           targets: build
 
-      - name: Secrets
-        if: github.event_name == 'push'
-        run: |
-          kubectl create secret generic compendium-secrets \
-            --from-literal='DB_POSTGRES_PASSWORD=${{ secrets.DB_POSTGRES_PASSWORD }}' \
-            --from-literal='DB_CONNECTION_STRING=${{ secrets.DB_CONNECTION_STRING }}' \
-            --from-literal='SERVER_AUTH_TOKEN_HASH_SALT=${{ secrets.SERVER_AUTH_TOKEN_HASH_SALT }}'
-
       - name: Deploy
         if: github.event_name == 'push'
         uses: mansagroup/nrwl-nx-action@v3
