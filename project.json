@@ -20,8 +20,7 @@
           "kubectl apply -f ./k8s/api-svc.yaml",
           "kubectl apply -f ./k8s/deployment.yaml",
           "kubectl apply -f ./k8s/ingress.yaml",
-          "kubectl apply -f ./k8s/issuer.yaml",
-          "kubectl apply -f ./k8s/certificate.yaml"
+          "kubectl apply -f ./k8s/issuer.yaml"
         ]
       }
     },
