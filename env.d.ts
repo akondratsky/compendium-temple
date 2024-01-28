@@ -6,5 +6,7 @@ declare namespace NodeJS {
     WEBSITE_API_URL: string;
     BFF_PORT: string;
     NODE_ENV: string;
+    SSL_PRIVATE_KEY: string;
+    SSL_PUBLIC_CERT: string;
   }
 }
