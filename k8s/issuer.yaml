@@ -6,9 +6,9 @@ metadata:
 spec:
   acme:
     email: aleksandrkondratskii@gmail.com
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: compendium-certs-secret
+      name: compendium-tls-secret
     solvers:
     - http01:
         ingress:

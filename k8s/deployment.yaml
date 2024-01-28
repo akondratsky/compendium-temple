@@ -50,12 +50,12 @@ spec:
         - name: SSL_PRIVATE_KEY
           valueFrom:
             secretKeyRef:
-              name: compendium-certs-secret
+              name: compendium-tls-secret
               key: tls.key
         - name: SSL_PUBLIC_CERT
           valueFrom:
             secretKeyRef:
-              name: compendium-certs-secret
+              name: compendium-tls-secret
               key: tls.crt
         resources:
           limits:

@@ -16,7 +16,7 @@ const port = process.env.BFF_PORT || 3042;
   const httpsOptions: HttpsOptions | undefined = isHttps ? {
     key: process.env.SSL_PRIVATE_KEY,
     cert: process.env.SSL_PUBLIC_CERT,
-  } : undefined
+  } : undefined;
 
   const app = await NestFactory.create(AppModule, {
     cors: true,
@@ -26,5 +26,6 @@ const port = process.env.BFF_PORT || 3042;
   app.setGlobalPrefix(API_PREFIX);
 
   await app.listen(port);
-  Logger.log(`🚀 BFF is running on: http://localhost:${port}/${API_PREFIX}`);
+
+  Logger.log(`BFF running on port ${port}; API prefix: ${API_PREFIX}; HTTPS: ${isHttps}`);
 })();

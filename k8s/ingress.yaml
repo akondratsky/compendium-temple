@@ -6,11 +6,15 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: compendium-issuer
 spec:
+  tls:
+  - hosts:
+      - "srv468157.hstgr.cloud"
+    secretName: compendium-tls-secret
   rules:
-    - host: srv468157.hstgr.cloud
+    - host: "srv468157.hstgr.cloud"
       http:
         paths:
-          - path: /api
+          - path: /
             pathType: Prefix
             backend:
               service:
