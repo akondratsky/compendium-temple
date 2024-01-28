@@ -56,6 +56,9 @@ jobs:
           projects: server,cli,worker
 
       - name: Build
+        env:
+          NODE_ENV: production
+          WEBSITE_API_URL: http://89.116.38.231:3000/api
         uses: mansagroup/nrwl-nx-action@v3
         with:
           targets: build
