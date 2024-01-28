@@ -1,6 +1,7 @@
 import { Layout, theme } from 'antd';
 import { SideMenu } from '../components/SideMenu';
 import { ReposTable } from '../components/ReposTable';
+import { Loader } from '../components/Loader';
 
 export const HomePage = () => {
   const { token } = theme.useToken();
@@ -21,7 +22,8 @@ export const HomePage = () => {
       </Layout.Sider>
 
       <Layout style={{ marginLeft: 400 }}>
-        <Layout.Content>
+        <Layout.Content style={{ position: 'relative' }}>
+          <Loader />
           <ReposTable />
         </Layout.Content>
       </Layout>

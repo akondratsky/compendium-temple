@@ -18,7 +18,6 @@ export const ResultsControlPanel = observer(() => {
           padding: 8,
         }}
       >
-
         <Pagination
           onChange={(page, pageSize) => {
             pagination.setCurrentPage(page);

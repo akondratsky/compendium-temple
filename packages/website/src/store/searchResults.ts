@@ -45,9 +45,13 @@ const RepoModel = types.model({
 
 const SearchResultsModel = types
   .model({
+    isLoading: types.boolean,
     repos: types.array(RepoModel),
   })
   .actions((self) => ({
+    setIsLoading(isLoading: boolean) {
+      self.isLoading = isLoading;
+    },
     set(repos: RepoSearchResultItem[]) {
       self.repos = cast(
         repos.map(
@@ -86,5 +90,6 @@ export type Repo = Instance<typeof RepoModel>;
 export type Flags = Instance<typeof FlagsModel>;
 
 export const searchResults = SearchResultsModel.create({
+  isLoading: false,
   repos: [],
 });
