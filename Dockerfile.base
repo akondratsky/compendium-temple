@@ -12,3 +12,6 @@ COPY ./tools ./tools
 
 COPY ./node_modules ./node_modules
 COPY ./packages ./packages
+
+RUN nx db:client
+
