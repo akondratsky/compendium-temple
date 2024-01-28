@@ -10,14 +10,10 @@ dayjs.extend(utc);
 
 const API_PREFIX = 'api';
 const port = process.env.BFF_PORT || 3042;
-const isDev = process.env.NODE_ENV === 'development';
-
 
 (async () => {
-  const app = await NestFactory.create(AppModule, { cors: isDev });
+  const app = await NestFactory.create(AppModule, { cors: true });
   app.setGlobalPrefix(API_PREFIX);
-  // app.use(json({ limit: '50mb' }));
-  // app.use(urlencoded({ extended: true, limit: '50mb' }));
   
   await app.listen(port);
   Logger.log(`🚀 BFF is running on: http://localhost:${port}/${API_PREFIX}`);
