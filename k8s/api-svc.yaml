@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: compendium-api-service
+  name: compendium-api-svc
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: compendium-app
   ports:

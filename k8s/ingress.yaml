@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: compendium-ingress
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: compendium-issuer
+spec:
+  rules:
+    - host: srv468157.hstgr.cloud
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: compendium-api-svc
+                port:
+                  number: 3000
