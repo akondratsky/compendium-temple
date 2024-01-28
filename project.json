@@ -13,8 +13,12 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
+        "parallel": false,
         "commands": [
-          "kubectl apply -f ./deployment.yaml"
+          "kubectl apply -f ./k8s/compendium-persistent-volume.yaml",
+          "kubectl apply -f ./k8s/compendium-persistent-volume-claim.yaml",
+          "kubectl apply -f ./k8s/compendium-api-service.yaml",
+          "kubectl apply -f ./k8s/compendium-deployment.yaml"
         ]
       }
     },

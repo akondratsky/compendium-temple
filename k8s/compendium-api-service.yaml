@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: compendium-api-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: compendium-app
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
