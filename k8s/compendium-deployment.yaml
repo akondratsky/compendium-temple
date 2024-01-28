@@ -47,16 +47,10 @@ spec:
             secretKeyRef:
               name: compendium-secrets
               key: DB_CONNECTION_STRING
-        - name: SSL_PRIVATE_KEY
-          valueFrom:
-            secretKeyRef:
-              name: compendium-secrets
-              key: SSL_PRIVATE_KEY
-        - name: SSL_PUBLIC_CERT
-          valueFrom:
-            secretKeyRef:
-              name: compendium-secrets
-              key: SSL_PUBLIC_CERT
+        - name: SSL_PRIVATE_KEY_PATH
+          value: "/etc/letsencrypt/live/srv468157.hstgr.cloud/privkey.pem"
+        - name: SSL_PUBLIC_CERT_PATH
+          value: "/etc/letsencrypt/live/srv468157.hstgr.cloud/fullchain.pem"
         resources:
           limits:
             cpu: "0.5"
