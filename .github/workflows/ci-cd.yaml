@@ -58,7 +58,7 @@ jobs:
       - name: Build
         env:
           NODE_ENV: production
-          WEBSITE_API_URL: https://89.116.38.231:3000/api
+          WEBSITE_API_URL: https://srv468157.hstgr.cloud/api
         uses: mansagroup/nrwl-nx-action@v3
         with:
           targets: build
