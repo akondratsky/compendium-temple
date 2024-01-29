@@ -15,12 +15,12 @@
       "options": {
         "parallel": false,
         "commands": [
-          "kubectl apply -f ./k8s/pv.yaml",
+          "kubectl apply -f ./k8s/sc.yaml",
           "kubectl apply -f ./k8s/pvc.yaml",
           "kubectl apply -f ./k8s/api-svc.yaml",
           "kubectl apply -f ./k8s/deployment.yaml",
-          "kubectl apply -f ./k8s/ingress.yaml",
-          "kubectl apply -f ./k8s/issuer.yaml"
+          "kubectl apply -f ./k8s/issuer.yaml",
+          "kubectl apply -f ./k8s/ingress.yaml"
         ]
       }
     },

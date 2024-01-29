@@ -1,8 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: compendium-persistent-volume-claim
+  name: compendium-pvc
+  annotations:
+    volume.kubernetes.io/selected-node: srv468157
 spec:
+  storageClassName: compendium-sc
   accessModes:
     - ReadWriteOnce
   resources:

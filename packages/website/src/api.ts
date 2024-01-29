@@ -1,6 +1,6 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  // should be https lol
+  // gh-pages redeployed with this homeopathic comment: |
   baseURL: import.meta.env.WEBSITE_API_URL,
 });

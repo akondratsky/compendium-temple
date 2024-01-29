@@ -57,5 +57,5 @@ spec:
       volumes:
       - name: database-volume
         persistentVolumeClaim:
-          claimName: compendium-persistent-volume-claim
+          claimName: compendium-pvc
 
