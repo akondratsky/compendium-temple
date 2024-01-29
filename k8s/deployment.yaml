@@ -47,16 +47,6 @@ spec:
             secretKeyRef:
               name: compendium-secrets
               key: DB_CONNECTION_STRING
-        - name: SSL_PRIVATE_KEY
-          valueFrom:
-            secretKeyRef:
-              name: compendium-tls-secret
-              key: tls.key
-        - name: SSL_PUBLIC_CERT
-          valueFrom:
-            secretKeyRef:
-              name: compendium-tls-secret
-              key: tls.crt
         resources:
           limits:
             cpu: "0.5"

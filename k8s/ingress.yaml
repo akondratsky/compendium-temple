@@ -5,11 +5,17 @@ metadata:
   namespace: default
   annotations:
     cert-manager.io/cluster-issuer: compendium-issuer
+
 spec:
   tls:
   - hosts:
       - "srv468157.hstgr.cloud"
     secretName: compendium-tls-secret
+  defaultBackend:
+    service:
+      name: compendium-api-svc
+      port:
+        number: 3000
   rules:
     - host: "srv468157.hstgr.cloud"
       http:
